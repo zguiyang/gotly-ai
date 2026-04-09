@@ -12,7 +12,6 @@ This version has breaking changes. APIs, conventions, and file structure may dif
 
 It should not duplicate the full project rules. Its job is to tell an agent:
 - which documents define the project rules
-- which document defines the UI rules
 - which MCP services are available
 - which local skills exist
 - what to read before changing code
@@ -23,8 +22,7 @@ Start in this order:
 
 1. Read `AGENTS.md`.
 2. Read the relevant files in `.ai-rules/`.
-3. Read `DESIGN.md` before any UI or styling work.
-4. Read the relevant docs in `node_modules/next/dist/docs/` before changing Next.js behavior.
+3. Read the relevant docs in `node_modules/next/dist/docs/` before changing Next.js behavior.
 
 ## Instruction Priority
 
@@ -33,8 +31,7 @@ When instructions conflict, use this order:
 1. Direct user request
 2. `AGENTS.md`
 3. `.ai-rules/*.md`
-4. `DESIGN.md`
-5. Official framework and library documentation
+4. Official framework and library documentation
 
 ## Project Rule Files
 
@@ -48,18 +45,6 @@ How to use them:
 - Treat `.ai-rules` as the source of truth for implementation rules.
 - Do not restate those rules in `AGENTS.md`; update the rule file instead.
 
-## UI Rules
-
-UI and visual direction live in `DESIGN.md`.
-
-Read `DESIGN.md` before changing:
-- `app/page.tsx`
-- `app/globals.css`
-- reusable UI in `components/`
-- typography, spacing, buttons, cards, colors, layout, or motion
-
-Treat `DESIGN.md` as the source of truth for visual decisions.
-
 ## Current Project Structure
 
 The current repository includes:
@@ -69,7 +54,6 @@ The current repository includes:
 - `modules/`
 - `shared/`
 - `.ai-rules/`
-- `DESIGN.md`
 
 Agents should follow the actual repository structure and the conventions defined in `.ai-rules`.
 
@@ -123,7 +107,6 @@ Typical mapping:
 
 Before editing code:
 - identify the relevant rule file in `.ai-rules`
-- identify whether `DESIGN.md` applies
 - identify whether a local skill applies
 - identify whether official Next.js docs or MCP runtime inspection is needed
 
