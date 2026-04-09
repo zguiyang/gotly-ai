@@ -113,6 +113,7 @@ Read topic-specific rule files when the task touches those areas.
 Current topic files:
 
 - `.ai-rules/nextjs-runtime-and-boundaries-rules.md`
+- `.ai-rules/react-client-state-and-forms-rules.md`
 - `.ai-rules/git-commit-rules.md`
 
 ## 6. AI Code Generation Rules
@@ -126,6 +127,7 @@ When generating or editing code:
 5. Prefer shared infrastructure in `shared/`.
 6. Do not introduce unnecessary architecture that the current project does not need yet.
 7. When adding domain files in `modules/`, prefer `*.service.ts` and `*.model.ts` naming.
+8. When adding reusable validation files, prefer `*.schema.ts` naming.
 
 ## 7. Next.js Version Rule
 

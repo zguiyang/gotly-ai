@@ -1,6 +1,11 @@
 {
   "version": 1,
   "skills": {
+    "ahooks": {
+      "source": "whinc/my-claude-plugins",
+      "sourceType": "github",
+      "computedHash": "a1552c45ea3b7e90ed12aa5807640d91b5c48e950cfcbf09d3662e6611d4f693"
+    },
     "better-auth-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",
@@ -45,6 +50,11 @@
       "source": "josiahsiegel/claude-plugin-marketplace",
       "sourceType": "github",
       "computedHash": "a3ff1c497a4c106d83f2342b30569257bbde3d12a40dde21b84ff693e3767bf0"
+    },
+    "tanstack-form": {
+      "source": "tanstack-skills/tanstack-skills",
+      "sourceType": "github",
+      "computedHash": "1eb9f9fc43ab2777f586f916b2234c5340ed98f296a98b22c75cbbafcbd29b86"
     },
     "vercel-composition-patterns": {
       "source": "vercel-labs/agent-skills",

@@ -40,11 +40,13 @@ Project architecture and coding rules live in `.ai-rules/`.
 Current rule files:
 - `.ai-rules/nextjs-fullstack-project-rules.md`
 - `.ai-rules/nextjs-runtime-and-boundaries-rules.md`
+- `.ai-rules/react-client-state-and-forms-rules.md`
 - `.ai-rules/git-commit-rules.md`
 
 How to use them:
 - Read `.ai-rules/nextjs-fullstack-project-rules.md` first for the repository's stable architecture rules and file organization conventions.
 - Read `.ai-rules/nextjs-runtime-and-boundaries-rules.md` for data fetching, API route usage, and server/client boundary rules.
+- Read `.ai-rules/react-client-state-and-forms-rules.md` when the task touches client-side state, custom hooks, form handling, or validation schemas.
 - Read `.ai-rules/git-commit-rules.md` before staging or committing changes.
 - Treat `.ai-rules` as the source of truth for implementation rules.
 - Do not restate those rules in `AGENTS.md`; update the rule file instead.
@@ -80,6 +82,7 @@ Usage rule:
 Project-local skills live in `.agents/skills/`.
 
 Current skill set:
+- `ahooks`
 - `next-best-practices`
 - `next-cache-components`
 - `nextjs-app-router-patterns`
@@ -89,6 +92,7 @@ Current skill set:
 - `react-components`
 - `tailwindcss-advanced-layouts`
 - `tailwindcss-animations`
+- `tanstack-form`
 - `better-auth-best-practices`
 - `drizzle-orm`
 - `zod`
@@ -100,12 +104,28 @@ How to use skills:
 
 Typical mapping:
 - Next.js app/router work: `next-best-practices`, `nextjs-app-router-patterns`
+- client-side hook utilities and event/timer helpers: `ahooks`
 - caching work: `next-cache-components`
 - UI/component work: `shadcn`, `react-components`, `tailwindcss-advanced-layouts`, `tailwindcss-animations`
 - React performance/composition work: `vercel-react-best-practices`, `vercel-composition-patterns`
+- headless client-side forms: `tanstack-form`
+- type-safe validated forms: `tanstack-form`, `zod`
 - auth work: `better-auth-best-practices`
 - data layer work: `drizzle-orm`
 - validation work: `zod`
+
+## Installed App Dependencies
+
+The current application codebase includes these implementation-level dependencies:
+
+- `@tanstack/react-form`
+- `ahooks`
+- `zod`
+
+Usage notes:
+- Treat installed dependencies as available building blocks, not automatic defaults.
+- Follow `.ai-rules/react-client-state-and-forms-rules.md` before introducing them into new code.
+- Do not assume `@tanstack/zod-form-adapter` is installed; verify `package.json` before generating adapter-based schema integration or add the dependency in the same change.
 
 ## Editing Rule
 

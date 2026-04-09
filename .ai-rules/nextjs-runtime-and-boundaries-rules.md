@@ -49,3 +49,12 @@ That means:
 - prefer direct server-side access over internal HTTP hops
 - keep rendering, server logic, and integration boundaries coherent
 - introduce network boundaries only when they serve a real interface or integration need
+
+## 6. Client-Side Library Reminder
+
+When using client-focused libraries such as `ahooks` or `@tanstack/react-form`:
+
+- keep them inside intentional Client Components
+- do not use them to replace server-rendered data access
+- validate sensitive or persisted data again on the server
+- read `.ai-rules/react-client-state-and-forms-rules.md` for the detailed rules
