@@ -10,7 +10,8 @@ const globalForRedis = globalThis as unknown as {
 }
 
 function createRedis() {
-  const client = new Redis(serverEnv.redisUrl, {
+  const client = new Redis({
+    ...serverEnv.redis,
     lazyConnect: true,
     maxRetriesPerRequest: 1,
   })

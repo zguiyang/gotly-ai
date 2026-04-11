@@ -12,9 +12,7 @@ const globalForPool = globalThis as unknown as {
 }
 
 function createPool() {
-  const pool = new Pool({
-    connectionString: serverEnv.databaseUrl,
-  })
+  const pool = new Pool(serverEnv.database)
 
   console.info(chalk.green('[db] Postgres pool initialized'))
 
