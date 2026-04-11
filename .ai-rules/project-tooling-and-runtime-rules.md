@@ -10,7 +10,7 @@ Use this file when the task touches:
 - project scripts and local command execution
 - starting or checking local services
 - browser-based page inspection
-- implementation workflows that require skills, MCP services, or package/framework documentation
+- implementation and review workflows that require skills, MCP services, tools, or package/framework documentation
 - written proposal, planning, or execution-plan artifacts
 
 ## 2. Package Manager and Command Runner Rule
@@ -46,9 +46,25 @@ When a task requires checking the UI or viewing a page:
 4. If the page cannot be opened because the relevant service is not running, tell the user what needs to be started.
 5. Do not start the service automatically just to inspect the page unless the user has approved that action.
 
-## 5. Skill and MCP Usage Order
+## 5. Need-Based Tool Selection Rule
 
-Implementation work should follow a consistent tool-selection order.
+Skills, MCP services, browser tools, runtime inspection, documentation lookup, shell commands, and other agent tools should be used deliberately, based on the task's risk and uncertainty.
+
+This is a need-based rule, not a no-tool rule. Agents should use available tools when they materially improve correctness, but should not invoke broad tool chains by default when reading the code and local project rules is sufficient.
+
+Rules:
+
+1. Start with the smallest sufficient context: the user's request, relevant diffs, nearby code, and the applicable `.ai-rules` files.
+2. Use the smallest relevant set of skills, MCP services, and tools needed to answer or implement the task correctly.
+3. Escalate to additional tools when they reduce real uncertainty, such as unclear framework behavior, version-sensitive APIs, runtime-only failures, hydration or server/client boundary issues, browser-visible UI state, CI failures, dependency behavior, or behavior that cannot be verified from code alone.
+4. Do not open browser or runtime inspection tools merely because the task touches UI or Next.js. Use them when rendered behavior, console/runtime errors, network state, or actual page state is relevant to the question.
+5. Do not repeatedly invoke multiple overlapping skills or MCP services when one relevant source gives enough confidence.
+6. Do not skip tools when they are necessary for correctness. If the code path is ambiguous, source documentation is version-sensitive, or runtime state is needed, use the appropriate skill, MCP service, or verification tool.
+7. For code review, begin with static review of the diff and related code. Use additional tools only when the review question requires them, such as reproducing a failing state, checking framework/runtime behavior, inspecting a rendered page, or validating a non-obvious integration boundary.
+
+## 6. Skill and MCP Usage Order
+
+When tools are needed, follow a consistent selection order.
 
 Rules:
 
@@ -57,7 +73,7 @@ Rules:
 3. If neither local skills nor relevant MCP coverage is sufficient, use Context7 MCP to fetch library/package documentation before implementing.
 4. Use skills and MCP together when they complement each other. Do not treat them as mutually exclusive options.
 
-## 6. Documentation Lookup Rule
+## 7. Documentation Lookup Rule
 
 Before implementing unfamiliar or version-sensitive behavior:
 
@@ -66,7 +82,7 @@ Before implementing unfamiliar or version-sensitive behavior:
 3. Use Context7 MCP for package/library documentation when local rules and MCP coverage do not fully answer the question.
 4. Prefer source-backed guidance over memory when there is any material risk of drift.
 
-## 7. Planning and Proposal Artifact Rule
+## 8. Planning and Proposal Artifact Rule
 
 Substantial proposals, implementation plans, execution plans, and handoff-oriented analysis should be written to repository files instead of being output only in the console or chat.
 
@@ -78,7 +94,7 @@ Rules:
 4. Keep chat summaries concise and point to the file that contains the durable plan or proposal.
 5. Short tactical notes, quick status updates, and ordinary implementation explanations do not need a dedicated file unless the user asks for one or the content is needed as a durable handoff artifact.
 
-## 8. Operational Checklist
+## 9. Operational Checklist
 
 Before running commands or implementing code:
 
@@ -86,6 +102,7 @@ Before running commands or implementing code:
 2. If yes, read this file alongside the architecture and boundary rules.
 3. Use `pnpm` for package and script operations.
 4. Do not start services without user approval.
-5. Prefer skills first, then MCP, then Context7 when additional guidance is needed.
-6. For browser work, follow the browser priority order defined in Section 4.
-7. For substantial proposals or execution plans, write the durable artifact to an appropriate repository file.
+5. Choose tools by need and uncertainty; do not run broad tool chains by default.
+6. Prefer skills first, then MCP, then Context7 when additional guidance is needed.
+7. For browser work, follow the browser priority order defined in Section 4.
+8. For substantial proposals or execution plans, write the durable artifact to an appropriate repository file.
