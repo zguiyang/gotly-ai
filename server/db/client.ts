@@ -26,3 +26,8 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export const db = drizzle(pool, { schema })
+
+export async function checkDatabaseConnection() {
+  await pool.query('select 1')
+  console.info(chalk.green('[db] Postgres connected'))
+}

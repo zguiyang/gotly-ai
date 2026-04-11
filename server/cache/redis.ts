@@ -34,3 +34,8 @@ export const redis = globalForRedis.redis ?? createRedis()
 if (process.env.NODE_ENV !== 'production') {
   globalForRedis.redis = redis
 }
+
+export async function checkRedisConnection() {
+  await redis.ping()
+  console.info(chalk.green('[redis] Redis ping succeeded'))
+}
