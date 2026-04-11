@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Share2, Trash2, Bookmark } from 'lucide-react'
+import { Share2, Trash2, Bookmark, ChevronDown } from 'lucide-react'
 
 type BookmarkItem = {
   id: string
@@ -146,7 +146,7 @@ export function BookmarksClient() {
           <div className="mt-16 flex justify-center">
             <button className="text-sm font-medium text-primary hover:underline flex items-center space-x-2">
               <span>加载更多收藏</span>
-              <span className="material-symbols-outlined text-base">expand_more</span>
+              <ChevronDown className="w-4 h-4" />
             </button>
           </div>
         )}
