@@ -3,7 +3,14 @@
 import Image from "next/image";
 import { Bell, HelpCircle, LayoutGrid } from "lucide-react";
 
-export function TopAppBar() {
+type TopAppBarProps = {
+  userName: string
+  userImage?: string | null
+}
+
+export function TopAppBar({ userName, userImage }: TopAppBarProps) {
+  const fallbackInitial = userName.trim().slice(0, 1).toUpperCase() || 'G'
+
   return (
     <header className="h-14 w-full sticky top-0 bg-slate-50 dark:bg-slate-950 flex justify-between items-center px-6 z-40 font-[family-name:var(--font-manrope)] tracking-tight text-sm">
       <h2 className="text-lg font-bold text-blue-700 dark:text-blue-400">
@@ -31,13 +38,19 @@ export function TopAppBar() {
           </button>
         </div>
         <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden cursor-pointer border border-slate-200 dark:border-slate-800">
-          <Image
-            alt="User profile avatar"
-            className="w-full h-full object-cover"
-            height={32}
-            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face"
-            width={32}
-          />
+          {userImage ? (
+            <Image
+              alt={`${userName} 的头像`}
+              className="h-full w-full object-cover"
+              height={32}
+              src={userImage}
+              width={32}
+            />
+          ) : (
+            <span className="flex h-full w-full items-center justify-center text-sm font-bold text-blue-700 dark:text-blue-300">
+              {fallbackInitial}
+            </span>
+          )}
         </div>
       </div>
     </header>

@@ -20,13 +20,19 @@ export function SignUpForm() {
     setPending(true)
 
     const formData = new FormData(event.currentTarget)
-    const name = String(formData.get('name') ?? '')
+    const name = String(formData.get('name') ?? '').trim()
     const email = String(formData.get('email') ?? '')
     const password = String(formData.get('password') ?? '')
     const terms = formData.get('terms')
 
     if (!terms) {
       setError('请同意服务协议和隐私政策')
+      setPending(false)
+      return
+    }
+
+    if (!name) {
+      setError('请输入昵称')
       setPending(false)
       return
     }
@@ -49,9 +55,9 @@ export function SignUpForm() {
       <AuthField
         autoComplete="username"
         inputClassName="bg-surface-container-low focus:bg-surface-container-lowest"
-        label="用户名"
+        label="昵称"
         name="name"
-        placeholder="输入您的灵感代号"
+        placeholder="输入你的昵称"
         required
       />
       <AuthField

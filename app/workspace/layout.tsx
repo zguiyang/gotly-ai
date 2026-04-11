@@ -22,7 +22,7 @@ export default async function WorkspaceLayout({
     <>
       <Sidebar />
       <main className="ml-64 min-h-screen">
-        <TopAppBar />
+        <TopAppBar userImage={session.user.image} userName={session.user.name} />
         <div className="max-w-5xl mx-auto px-8 py-12">{children}</div>
       </main>
     </>
