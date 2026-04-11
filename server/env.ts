@@ -23,4 +23,8 @@ export const serverEnv = {
     secret: env.BETTER_AUTH_SECRET,
     url: env.BETTER_AUTH_URL,
   },
+  aiGateway: {
+    apiKey: env.AI_GATEWAY_API_KEY,
+    url: env.AI_GATEWAY_URL,
+  },
 } as const

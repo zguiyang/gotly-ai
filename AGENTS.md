@@ -54,6 +54,7 @@ Current rule files:
 - `.ai-rules/project-tooling-and-runtime-rules.md`
 - `.ai-rules/testing-and-integration-rules.md`
 - `.ai-rules/git-commit-rules.md`
+- `.ai-rules/ai-sdk-rules.md`
 
 How to use them:
 - Read `.ai-rules/nextjs-fullstack-project-rules.md` first for the repository's stable architecture rules and file organization conventions.
@@ -62,6 +63,7 @@ How to use them:
 - Read `.ai-rules/project-tooling-and-runtime-rules.md` when the task touches dependency installation, project commands, service startup, browser inspection, or the order of using skills and MCP tools.
 - Read `.ai-rules/testing-and-integration-rules.md` when the task touches test strategy, test structure, end-to-end testing, or integration testing.
 - Read `.ai-rules/git-commit-rules.md` before staging or committing changes.
+- Read `.ai-rules/ai-sdk-rules.md` when the task touches AI SDK, model calls, agents, AI Gateway, streaming chat, or `@ai-sdk/react`.
 - Treat `.ai-rules` as the source of truth for implementation rules.
 - Do not restate those rules in `AGENTS.md`; update the rule file instead.
 
@@ -101,6 +103,7 @@ Usage rule:
 Project-local skills live in `.agents/skills/`.
 
 Current skill set:
+- `ai-sdk`
 - `ahooks`
 - `next-best-practices`
 - `next-cache-components`
@@ -126,6 +129,7 @@ How to use skills:
 - Use the smallest relevant set of skills for the task.
 
 Typical mapping:
+- AI SDK, AI Gateway, model calls, agents, chatbots, streaming, tool calling, structured output, embeddings, or `useChat`: `ai-sdk`
 - Next.js app/router work: `next-best-practices`, `nextjs-app-router-patterns`
 - client-side hook utilities and event/timer helpers: `ahooks`
 - caching work: `next-cache-components`
@@ -144,8 +148,10 @@ Typical mapping:
 
 The current application codebase includes these implementation-level dependencies:
 
+- `@ai-sdk/react`
 - `@tanstack/react-form`
 - `ahooks`
+- `ai`
 - `ioredis`
 - `lucide-react`
 - `zod`
@@ -153,6 +159,8 @@ The current application codebase includes these implementation-level dependencie
 Usage notes:
 - Treat installed dependencies as available building blocks, not automatic defaults.
 - Follow `.ai-rules/react-client-state-and-forms-rules.md` before introducing them into new code.
+- Follow `.ai-rules/ai-sdk-rules.md` before using `ai`, `@ai-sdk/react`, `AI_GATEWAY_API_KEY`, or `AI_GATEWAY_URL`.
+- Treat `AI_GATEWAY_API_KEY` and `AI_GATEWAY_URL` as server-only configuration. Do not expose them through `NEXT_PUBLIC_*` variables or Client Components.
 - Treat `ioredis` as a server-only infrastructure dependency. Do not import it into Client Components or other cross-runtime modules.
 - Treat `lucide-react` as the default project icon library. Use `better-icons` to search and choose icons, prefer importing matching `lucide-react` icons in application code, and use raw SVG assets only when lucide does not provide a suitable icon or a specific non-lucide asset is required.
 - Do not assume `@tanstack/zod-form-adapter` is installed; verify `package.json` before generating adapter-based schema integration or add the dependency in the same change.

@@ -127,6 +127,7 @@ Current topic files:
 - `.ai-rules/project-tooling-and-runtime-rules.md`
 - `.ai-rules/testing-and-integration-rules.md`
 - `.ai-rules/git-commit-rules.md`
+- `.ai-rules/ai-sdk-rules.md`
 
 ## 6. AI Code Generation Rules
 
