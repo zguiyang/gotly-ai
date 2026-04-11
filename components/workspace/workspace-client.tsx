@@ -8,6 +8,7 @@ import {
   Sparkles,
 } from 'lucide-react'
 
+import { callAction } from '@/components/actions/call-action'
 import { type AssetListItem } from '@/shared/assets/assets.types'
 import { createWorkspaceAssetAction } from '@/app/workspace/actions'
 
@@ -106,6 +107,7 @@ export function WorkspaceClient({
   const [inputValue, setInputValue] = useState('')
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState<string | null>(null)
+  const [recentItems, setRecentItems] = useState(recentAssets)
 
   async function handleSubmit() {
     const text = inputValue.trim()
@@ -118,17 +120,18 @@ export function WorkspaceClient({
     setStatus('submitting')
     setMessage(null)
 
-    const result = await createWorkspaceAssetAction(text)
-
-    if (!result.ok) {
+    try {
+      const nextItem = await callAction(() => createWorkspaceAssetAction(text), {
+        loading: '保存中...',
+        success: '已保存。',
+        error: '保存失败，请重试。',
+      })
+      setRecentItems((items) => [nextItem, ...items].slice(0, 6))
+      setInputValue('')
+      setStatus('success')
+    } catch {
       setStatus('error')
-      setMessage(result.message)
-      return
     }
-
-    setInputValue('')
-    setStatus('success')
-    setMessage('已收好。')
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -190,13 +193,13 @@ export function WorkspaceClient({
           <div className="flex-1 h-px bg-outline-variant/20" />
         </div>
 
-        {recentAssets.length === 0 ? (
+        {recentItems.length === 0 ? (
           <p className="text-sm text-on-surface-variant">
             还没有保存内容，先随手记一句。
           </p>
         ) : (
           <div>
-            {recentAssets.map((asset) => {
+            {recentItems.map((asset) => {
               const presentation = assetTypePresentation[asset.type]
               return (
                 <RecentItem

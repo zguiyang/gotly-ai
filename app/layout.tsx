@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "@/components/ui/sonner";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";
@@ -27,6 +28,7 @@ export default function RootLayout({
         {/* TODO: Global ThemeProvider */}
         {/* TODO: Global Context Providers (e.g., User, Theme, etc.) */}
         {children}
+        <Toaster />
       </body>
     </html>
   );
