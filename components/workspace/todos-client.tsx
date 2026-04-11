@@ -158,6 +158,41 @@ function TodoItemComponent({
   )
 }
 
+function CompletedSection({
+  todos,
+  onToggle,
+}: {
+  todos: TodoItem[]
+  onToggle: (id: string) => void
+}) {
+  const completedTodos = todos.filter((t) => t.completed)
+
+  if (completedTodos.length === 0) {
+    return null
+  }
+
+  return (
+    <div className="mt-10 max-w-5xl">
+      <div className="flex items-center gap-2 mb-4">
+        <Check className="w-4 h-4 text-on-surface-variant" />
+        <span className="text-sm font-semibold text-on-surface-variant">
+          已完成 {completedTodos.length} 项
+        </span>
+      </div>
+      <div className="bg-surface-container-lowest rounded-2xl overflow-hidden">
+        {completedTodos.map((item, index) => (
+          <div key={item.id}>
+            <TodoItemComponent item={item} onToggle={onToggle} />
+            {index < completedTodos.length - 1 && (
+              <div className="h-px bg-outline-variant/10 mx-4" />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function QuadrantCard({
   config,
   todos,
@@ -242,6 +277,8 @@ export function TodosClient() {
           />
         ))}
       </div>
+
+      <CompletedSection todos={todos} onToggle={handleToggle} />
 
       <div className="fixed bottom-10 right-12">
         <button className="bg-gradient-to-br from-primary to-primary-container hover:opacity-90 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg shadow-primary/20 transition-all active:scale-95">
