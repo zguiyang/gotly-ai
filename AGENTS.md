@@ -103,6 +103,7 @@ Current skill set:
 - `tailwindcss-animations`
 - `tanstack-form`
 - `better-auth-best-practices`
+- `better-icons`
 - `drizzle-orm`
 - `postgres`
 - `postgres-pro`
@@ -123,6 +124,7 @@ Typical mapping:
 - headless client-side forms: `tanstack-form`
 - type-safe validated forms: `tanstack-form`, `zod`
 - auth work: `better-auth-best-practices`
+- icon search and selection: `better-icons`; implement with `lucide-react` first, then SVG fallback when needed
 - data layer work: `drizzle-orm`
 - PostgreSQL operations and query tuning: `postgres`, `postgres-pro`
 - PostgreSQL schema design and review: `postgresql-table-design`
@@ -135,12 +137,14 @@ The current application codebase includes these implementation-level dependencie
 - `@tanstack/react-form`
 - `ahooks`
 - `ioredis`
+- `lucide-react`
 - `zod`
 
 Usage notes:
 - Treat installed dependencies as available building blocks, not automatic defaults.
 - Follow `.ai-rules/react-client-state-and-forms-rules.md` before introducing them into new code.
 - Treat `ioredis` as a server-only infrastructure dependency. Do not import it into Client Components or other cross-runtime modules.
+- Treat `lucide-react` as the default project icon library. Use `better-icons` to search and choose icons, prefer importing matching `lucide-react` icons in application code, and use raw SVG assets only when lucide does not provide a suitable icon or a specific non-lucide asset is required.
 - Do not assume `@tanstack/zod-form-adapter` is installed; verify `package.json` before generating adapter-based schema integration or add the dependency in the same change.
 
 ## Local Infrastructure
