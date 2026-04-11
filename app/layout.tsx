@@ -1,22 +1,12 @@
 import type { Metadata } from "next";
-import { Inter, Manrope } from "next/font/google";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/600.css";
+import "@fontsource/manrope/400.css";
+import "@fontsource/manrope/500.css";
+import "@fontsource/manrope/600.css";
+import "@fontsource/manrope/700.css";
 import "./globals.css";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500", "600"],
-  fallback: ["PingFang SC", "Noto Sans SC", "system-ui", "sans-serif"],
-});
-
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500", "600", "700"],
-  fallback: ["PingFang SC", "Noto Sans SC", "system-ui", "sans-serif"],
-});
 
 export const metadata: Metadata = {
   title: "Gotly AI",
@@ -32,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" className="light">
       <body
-        className={`${inter.variable} ${manrope.variable} min-h-full flex flex-col antialiased`}
+        className="font-inter font-manrope min-h-full flex flex-col antialiased"
       >
         {children}
       </body>

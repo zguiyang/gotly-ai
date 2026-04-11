@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CircleHelp } from "lucide-react";
+import { CircleHelp, Archive } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AuthNavbarProps {
@@ -11,12 +11,7 @@ export function AuthNavbar({ className }: AuthNavbarProps) {
     <header className={cn("flex w-full items-center justify-between px-8 pt-6", className)}>
       <div className="flex items-center gap-2">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-container text-on-primary">
-          <span
-            className="material-symbols-outlined"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            archive
-          </span>
+          <Archive className="h-5 w-5" fill="currentColor" />
         </div>
         <span className="font-headline text-xl font-bold tracking-tighter text-on-surface">
           Gotly AI
