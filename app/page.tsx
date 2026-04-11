@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import Image from "next/image";
 
 // Material Symbols component
 function MaterialIcon({
@@ -35,10 +35,12 @@ function Sidebar() {
       {/* Logo */}
       <div className="flex flex-col mb-10">
         <div className="flex items-center gap-3 mb-1">
-          <img
+          <Image
             alt="Gotly AI Logo"
             className="w-10 h-10 rounded-xl"
+            height={40}
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsPabDm2LE2xcHb8R7k8gWtUjDGPSivqvy-kvfu2Tt-Qr94p5Gz0gFLDRnDugJWqNuCTMaIkFC2N5pfGkUuDco1amqU4EbjmxY5s02rWP0qaw_Ghom63FqqfdQx5cVo1f8GB2-ifrp2DQPDHOvvUxIN_sJjTYnEqE0743qjd-sbfJ_Ed_0CrFz7GftSV5FBzHRDHDt2Uk5ItpurDc2a6RVGoDLtfY1H7dh-5pQ5wJqLtb0FFYbrqnWwMQm7k-xb0w26M5AMIkG9Oc"
+            width={40}
           />
           <div>
             <h1 className="text-xl font-extrabold text-blue-700 dark:text-blue-400">
@@ -121,10 +123,12 @@ function TopAppBar() {
           </button>
         </div>
         <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden cursor-pointer border border-slate-200 dark:border-slate-800">
-          <img
+          <Image
             alt="User profile avatar"
             className="w-full h-full object-cover"
+            height={32}
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKsQuNJEu7bxOZdp1mQbsK1jJGpQCuB6cf7nlRhY-auUjdsBIYioX_3WcbxpZ9PRcBN6pmRiE9mcB4yP78oWGbI6-FgIe3Irkpk5tSQ9mgMLL5WTYaar0pMLWUU3RekQs16Y5gjL_YFv3fbdnW85QMJt8100E-_ufP0gAxKwdPGeNlBrIaDirA1uJXddcXuJEMC62nvB3cs6ns0Xokza4kD9gb_W9LuZ2LpxJgrG9Q5RlXvqQyyp3lT-ODtsgzEdFJOb6xl4MczHo"
+            width={32}
           />
         </div>
       </div>
@@ -357,8 +361,6 @@ function TodayTodosCard() {
 
 // Main Home Page Component
 export default function HomePage() {
-  const [textareaValue, setTextareaValue] = useState("");
-
   return (
     <>
       {/* Sidebar */}
