@@ -19,4 +19,8 @@ export const serverEnv = {
     username: env.REDIS_USERNAME,
     password: env.REDIS_PASSWORD,
   },
+  auth: {
+    secret: env.BETTER_AUTH_SECRET,
+    url: env.BETTER_AUTH_URL,
+  },
 } as const
