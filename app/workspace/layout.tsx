@@ -1,11 +1,23 @@
-import { Sidebar } from "@/components/workspace/sidebar";
-import { TopAppBar } from "@/components/workspace/top-app-bar";
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 
-export default function WorkspaceLayout({
+import { Sidebar } from '@/components/workspace/sidebar'
+import { TopAppBar } from '@/components/workspace/top-app-bar'
+import { auth } from '@/server/auth/auth'
+
+export default async function WorkspaceLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+
+  if (!session?.user) {
+    redirect('/auth/sign-in')
+  }
+
   return (
     <>
       <Sidebar />
@@ -14,5 +26,5 @@ export default function WorkspaceLayout({
         <div className="max-w-5xl mx-auto px-8 py-12">{children}</div>
       </main>
     </>
-  );
+  )
 }
