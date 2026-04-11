@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm'
-import { boolean, check, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
+import { boolean, check, index, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 
 export const users = pgTable(
   'users',
@@ -61,8 +61,34 @@ export const verifications = pgTable('verifications', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
 
+export const assets = pgTable(
+  'assets',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    originalText: text('original_text').notNull(),
+    type: text('type', { enum: ['note', 'link', 'todo'] }).notNull(),
+    url: text('url'),
+    timeText: text('time_text'),
+    dueAt: timestamp('due_at'),
+    completedAt: timestamp('completed_at'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => [
+    check('assets_type_check', sql`${table.type} in ('note', 'link', 'todo')`),
+    index('assets_user_created_at_idx').on(table.userId, table.createdAt),
+    index('assets_user_type_created_at_idx').on(table.userId, table.type, table.createdAt),
+    index('assets_user_completed_at_idx').on(table.userId, table.completedAt),
+  ]
+)
+
 export type User = typeof users.$inferSelect
 export type NewUser = typeof users.$inferInsert
 export type Session = typeof sessions.$inferSelect
 export type Account = typeof accounts.$inferSelect
 export type Verification = typeof verifications.$inferSelect
+export type Asset = typeof assets.$inferSelect
+export type NewAsset = typeof assets.$inferInsert

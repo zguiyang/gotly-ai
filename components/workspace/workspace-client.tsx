@@ -8,6 +8,9 @@ import {
   Sparkles,
 } from 'lucide-react'
 
+import { type AssetListItem } from '@/shared/assets/assets.types'
+import { createWorkspaceAssetAction } from '@/app/workspace/actions'
+
 function QuickActionChips({
   onChipClick,
 }: {
@@ -42,6 +45,7 @@ function RecentItem({
   excerpt,
   time,
   type,
+  timeText,
 }: {
   icon: React.ElementType
   iconBg: string
@@ -50,6 +54,7 @@ function RecentItem({
   excerpt: string
   time: string
   type: string
+  timeText?: string | null
 }) {
   return (
     <div className="group py-4 border-t border-outline-variant/10 cursor-pointer hover:bg-surface-container-low/50 -mx-2 px-2 rounded-sm transition-colors duration-150">
@@ -70,7 +75,7 @@ function RecentItem({
             {excerpt}
           </p>
           <p className="text-xs text-on-surface-variant/60 mt-1">
-            {type}
+            {timeText ? `${type} · ${timeText}` : type}
           </p>
         </div>
       </div>
@@ -78,38 +83,60 @@ function RecentItem({
   )
 }
 
-export function WorkspaceClient() {
-  const [inputValue, setInputValue] = useState('')
+const assetTypePresentation = {
+  note: { icon: FileText, iconBg: 'bg-primary/10', iconColor: 'text-primary', label: '普通记录' },
+  link: { icon: Link2, iconBg: 'bg-secondary/10', iconColor: 'text-secondary', label: '链接收藏' },
+  todo: { icon: StickyNote, iconBg: 'bg-tertiary/10', iconColor: 'text-tertiary', label: '待处理' },
+}
 
-  const recentItems = [
-    {
-      icon: FileText,
-      iconBg: 'bg-primary/10',
-      iconColor: 'text-primary',
-      title: '产品规划笔记',
-      excerpt: '讨论了关于 2024 年 Q3 季度的 AI 功能迭代路线，包含自动化分类和多端同步的优先级调整...',
-      time: '2小时前',
-      type: '普通记录',
-    },
-    {
-      icon: Link2,
-      iconBg: 'bg-secondary/10',
-      iconColor: 'text-secondary',
-      title: 'GitHub 链接',
-      excerpt: 'github.com/gotly-ai/core-engine-v2',
-      time: '昨天',
-      type: '链接收藏',
-    },
-    {
-      icon: StickyNote,
-      iconBg: 'bg-tertiary/10',
-      iconColor: 'text-tertiary',
-      title: '会议记录总结',
-      excerpt: 'AI 自动生成的摘要：重点在于市场推广渠道的下沉，以及针对学生群体的定价策略调整...',
-      time: '3天前',
-      type: '普通记录',
-    },
-  ]
+function formatAssetTime(date: Date): string {
+  return date.toLocaleString('zh-CN', {
+    month: 'numeric',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+export function WorkspaceClient({
+  recentAssets,
+}: {
+  recentAssets: AssetListItem[]
+}) {
+  const [inputValue, setInputValue] = useState('')
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+  const [message, setMessage] = useState<string | null>(null)
+
+  async function handleSubmit() {
+    const text = inputValue.trim()
+    if (!text) {
+      setStatus('error')
+      setMessage('先输入一句内容。')
+      return
+    }
+
+    setStatus('submitting')
+    setMessage(null)
+
+    const result = await createWorkspaceAssetAction(text)
+
+    if (!result.ok) {
+      setStatus('error')
+      setMessage(result.message)
+      return
+    }
+
+    setInputValue('')
+    setStatus('success')
+    setMessage('已收好。')
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter' && status !== 'submitting') {
+      e.preventDefault()
+      handleSubmit()
+    }
+  }
 
   return (
     <>
@@ -134,16 +161,25 @@ export function WorkspaceClient() {
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
-          <button className="absolute inset-y-0 right-2 my-auto flex items-center gap-2 px-5 h-10 bg-primary hover:bg-primary/90 text-on-primary rounded-full font-medium text-sm transition-all duration-150 cursor-pointer hover:shadow-[0_4px_12px_rgba(0,81,177,0.2)]">
-            提交
+          <button
+            onClick={handleSubmit}
+            disabled={status === 'submitting'}
+            className="absolute inset-y-0 right-2 my-auto flex items-center gap-2 px-5 h-10 bg-primary hover:bg-primary/90 text-on-primary rounded-full font-medium text-sm transition-all duration-150 cursor-pointer hover:shadow-[0_4px_12px_rgba(0,81,177,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {status === 'submitting' ? '保存中...' : '提交'}
           </button>
         </div>
-        {inputValue && (
+        {message ? (
+          <p className="text-xs text-on-surface-variant/60 mt-2 px-4">
+            {message}
+          </p>
+        ) : inputValue ? (
           <p className="text-xs text-on-surface-variant/60 mt-2 px-4">
             输入后会保存到全部内容，查询结果会出现在这里
           </p>
-        )}
+        ) : null}
       </section>
 
       <section>
@@ -154,11 +190,30 @@ export function WorkspaceClient() {
           <div className="flex-1 h-px bg-outline-variant/20" />
         </div>
 
-        <div>
-          {recentItems.map((item, index) => (
-            <RecentItem key={index} {...item} />
-          ))}
-        </div>
+        {recentAssets.length === 0 ? (
+          <p className="text-sm text-on-surface-variant">
+            还没有保存内容，先随手记一句。
+          </p>
+        ) : (
+          <div>
+            {recentAssets.map((asset) => {
+              const presentation = assetTypePresentation[asset.type]
+              return (
+                <RecentItem
+                  key={asset.id}
+                  icon={presentation.icon}
+                  iconBg={presentation.iconBg}
+                  iconColor={presentation.iconColor}
+                  title={asset.title}
+                  excerpt={asset.excerpt}
+                  time={formatAssetTime(new Date(asset.createdAt))}
+                  type={presentation.label}
+                  timeText={asset.timeText}
+                />
+              )
+            })}
+          </div>
+        )}
       </section>
     </>
   )
