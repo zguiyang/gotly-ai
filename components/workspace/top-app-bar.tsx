@@ -34,13 +34,8 @@ export function TopAppBar({ userName, userImage }: TopAppBarProps) {
       {/* Mobile menu */}
       <div className="lg:hidden flex items-center shrink-0">
         <Sheet>
-          <SheetTrigger asChild>
-            <button
-              className="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-sm transition-colors duration-150 cursor-pointer"
-              aria-label="打开菜单"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
+          <SheetTrigger className="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-sm transition-colors duration-150 cursor-pointer">
+            <Menu className="w-5 h-5" />
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0 bg-surface border-r border-outline-variant/20">
             <div className="flex flex-col h-full">
