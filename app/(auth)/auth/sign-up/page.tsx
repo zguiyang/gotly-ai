@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { CircleHelp } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { AuthShell } from "@/components/auth/auth-shell";
+import { AuthNavbar } from "@/components/auth/auth-navbar";
 import { AuthCard } from "@/components/auth/auth-card";
 import { AuthDivider } from "@/components/auth/auth-divider";
 import { AuthField } from "@/components/auth/auth-field";
@@ -10,14 +11,7 @@ import { Button } from "@/components/ui/button";
 export default function SignUpPage() {
   return (
     <AuthShell>
-      <header className="w-full px-8 pt-6">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
-          <span className="font-headline text-xl font-bold tracking-tighter text-on-surface">
-            Gotly AI
-          </span>
-          <CircleHelp className="h-5 w-5 text-[#54647a]" strokeWidth={2} />
-        </div>
-      </header>
+      <AuthNavbar />
 
       <main className="flex flex-1 items-center justify-center px-6 pt-24 pb-12">
         <div className="flex w-full max-w-[440px] flex-col gap-10">
@@ -72,7 +66,7 @@ export default function SignUpPage() {
 
               <Button className="w-full gap-2 text-white" size="xl" type="submit" variant="primary">
                 <span>创建账号</span>
-                <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                <ArrowRight className="h-5 w-5" />
               </Button>
             </form>
 

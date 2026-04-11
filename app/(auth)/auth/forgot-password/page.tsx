@@ -1,17 +1,14 @@
 import Link from "next/link";
+import { Mail, ArrowLeft } from "lucide-react";
 import { AuthShell } from "@/components/auth/auth-shell";
-import { AuthBrand } from "@/components/auth/auth-brand";
+import { AuthNavbar } from "@/components/auth/auth-navbar";
 import { AuthField } from "@/components/auth/auth-field";
 import { AuthPageFooter } from "@/components/auth/auth-footer";
 
 export default function ForgotPasswordPage() {
   return (
     <AuthShell>
-      <header className="w-full px-8 py-8">
-        <div className="mx-auto flex w-full max-w-7xl items-center">
-          <AuthBrand />
-        </div>
-      </header>
+      <AuthNavbar />
 
       <main className="flex flex-1 items-center justify-center px-6">
         <div className="w-full max-w-md">
@@ -28,7 +25,7 @@ export default function ForgotPasswordPage() {
               inputClassName="py-4"
               label="EMAIL"
               placeholder="your@email.com"
-              prefixIcon={<span className="material-symbols-outlined text-lg">mail</span>}
+              prefixIcon={<Mail className="text-lg" />}
             />
 
             <button
@@ -43,7 +40,7 @@ export default function ForgotPasswordPage() {
                 className="group flex items-center gap-2 text-sm font-semibold text-primary transition-opacity hover:opacity-80"
                 href="/auth/sign-in"
               >
-                <span className="material-symbols-outlined text-base">arrow_back</span>
+                <ArrowLeft className="h-4 w-4" />
                 <span>返回登录</span>
               </Link>
             </div>

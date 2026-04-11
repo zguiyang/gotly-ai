@@ -1,13 +1,12 @@
 import Link from "next/link";
+import { CheckCircle } from "lucide-react";
 import { AuthShell } from "@/components/auth/auth-shell";
-import { AuthBrand } from "@/components/auth/auth-brand";
+import { AuthNavbar } from "@/components/auth/auth-navbar";
 
 export default function ResetLinkSentPage() {
   return (
     <AuthShell>
-      <header className="fixed top-0 left-0 z-10 flex w-full justify-center py-8">
-        <AuthBrand />
-      </header>
+      <AuthNavbar />
 
       <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden p-6">
         <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
@@ -19,12 +18,7 @@ export default function ResetLinkSentPage() {
               className="flex h-24 w-24 items-center justify-center rounded-full bg-surface-container-lowest glow-icon auth-card-shadow"
               style={{ filter: "drop-shadow(0 0 15px rgba(0, 81, 177, 0.15))" }}
             >
-              <span
-                className="material-symbols-outlined text-6xl text-primary"
-                style={{ fontVariationSettings: "'wght' 200" }}
-              >
-                check_circle
-              </span>
+              <CheckCircle className="h-14 w-14 text-primary" strokeWidth={1.5} />
             </div>
           </div>
 
