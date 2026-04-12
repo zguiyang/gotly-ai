@@ -213,7 +213,7 @@ export function WorkspaceClient({
 
       <section className="mb-8">
         <div className="relative">
-          <div className="absolute top-4 left-0 pl-5 flex items-center pointer-events-none sm:inset-y-0 sm:top-auto">
+          <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
             <Sparkles className="w-5 h-5 text-on-surface-variant/50" />
           </div>
           <input
