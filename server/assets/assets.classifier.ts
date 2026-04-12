@@ -21,7 +21,7 @@ export function extractUrl(text: string): string | null {
   return matches ? matches[0] : null
 }
 
-const QUERY_KEYWORDS = ['查询', '最近记过', '在哪', '有哪些']
+const QUERY_KEYWORDS = ['查询', '最近记过', '在哪', '有哪些', '找一下', '查一下', '帮我找']
 const QUERY_SUFFIXES = ['吗', '么']
 
 export function isObviousQuery(text: string): boolean {
