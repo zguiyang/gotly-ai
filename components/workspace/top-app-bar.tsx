@@ -34,7 +34,10 @@ export function TopAppBar({ userName, userImage }: TopAppBarProps) {
       {/* Mobile menu */}
       <div className="lg:hidden flex items-center shrink-0">
         <Sheet>
-          <SheetTrigger className="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-sm transition-colors duration-150 cursor-pointer">
+          <SheetTrigger
+            aria-label="打开工作区导航"
+            className="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-sm transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+          >
             <Menu className="w-5 h-5" />
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0 bg-surface border-r border-outline-variant/20">
@@ -83,7 +86,7 @@ export function TopAppBar({ userName, userImage }: TopAppBarProps) {
           </div>
           <input
             className="w-full h-9 bg-white rounded-lg pl-10 pr-4 text-sm text-on-surface placeholder:text-on-surface-variant/40 border border-outline-variant/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all duration-200 shadow-sm"
-            placeholder="搜索..."
+            placeholder="快速查找..."
             type="text"
           />
         </div>

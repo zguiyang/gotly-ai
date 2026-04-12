@@ -61,7 +61,7 @@ function RecentItem({
   timeText?: string | null
 }) {
   return (
-    <div className="group py-4 border-t border-outline-variant/10 cursor-pointer hover:bg-surface-container-low/50 -mx-2 px-2 rounded-sm transition-colors duration-150">
+    <div className="group py-4 border-t border-outline-variant/10 cursor-pointer hover:bg-surface-container-low/50 focus-within:bg-surface-container-low/50 -mx-2 px-2 rounded-sm transition-colors duration-150">
       <div className="flex items-start gap-4">
         <div className={`w-8 h-8 rounded-sm flex items-center justify-center flex-shrink-0 ${iconBg}`}>
           <Icon className={`w-4 h-4 ${iconColor}`} />
@@ -107,7 +107,7 @@ function QueryResults({
       </p>
       {results.length === 0 ? (
         <p className="text-sm text-on-surface-variant">
-          没有找到相关内容。换个关键词试试。
+          没有找到相关内容。可以换个关键词，或先在上方保存一条新记录。
         </p>
       ) : (
         <div>
@@ -202,7 +202,7 @@ export function WorkspaceClient({
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-2xl font-headline font-bold text-on-surface tracking-tight">
+        <h1 className="text-2xl lg:text-3xl font-bold text-on-surface tracking-tight font-[family-name:var(--font-manrope)]">
           想到什么，先放这
         </h1>
         <p className="text-sm text-on-surface-variant mt-1">
@@ -213,11 +213,11 @@ export function WorkspaceClient({
 
       <section className="mb-8">
         <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+          <div className="absolute top-4 left-0 pl-5 flex items-center pointer-events-none sm:inset-y-0 sm:top-auto">
             <Sparkles className="w-5 h-5 text-on-surface-variant/50" />
           </div>
           <input
-            className="w-full h-14 bg-surface-container-lowest rounded-full pl-14 pr-28 text-base text-on-surface placeholder:text-on-surface-variant/40 shadow-[0_4px_16px_rgba(0,0,0,0.06)] border border-outline-variant/10 focus:outline-none focus:ring-2 focus:ring-primary/15 focus:shadow-[0_8px_24px_rgba(0,0,0,0.1)] transition-all duration-200"
+            className="w-full h-14 bg-surface-container-lowest rounded-lg sm:rounded-full pl-14 pr-5 sm:pr-28 text-base text-on-surface placeholder:text-on-surface-variant/40 shadow-[0_4px_16px_rgba(0,0,0,0.06)] border border-outline-variant/10 focus:outline-none focus:ring-2 focus:ring-primary/15 focus:shadow-[0_8px_24px_rgba(0,0,0,0.1)] transition-all duration-200"
             placeholder="粘贴链接、记下想法或搜索..."
             type="text"
             value={inputValue}
@@ -225,11 +225,12 @@ export function WorkspaceClient({
             onKeyDown={handleKeyDown}
           />
           <button
+            type="button"
             onClick={handleSubmit}
             disabled={status === 'submitting'}
-            className="absolute inset-y-0 right-2 my-auto flex items-center gap-2 px-5 h-10 bg-primary hover:bg-primary/90 text-on-primary rounded-full font-medium text-sm transition-all duration-150 cursor-pointer hover:shadow-[0_4px_12px_rgba(0,81,177,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-3 sm:mt-0 sm:absolute sm:inset-y-0 sm:right-2 sm:my-auto flex w-full sm:w-auto items-center justify-center gap-2 px-5 h-10 bg-primary hover:bg-primary/90 text-on-primary rounded-lg sm:rounded-full font-medium text-sm transition-all duration-150 cursor-pointer hover:shadow-[0_4px_12px_rgba(0,81,177,0.2)] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           >
-            {status === 'submitting' ? '保存中...' : '提交'}
+            {status === 'submitting' ? '处理中...' : '提交'}
           </button>
         </div>
         {message ? (

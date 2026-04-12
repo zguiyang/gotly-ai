@@ -38,31 +38,34 @@ function BookmarkItem({ item }: { item: AssetListItem }) {
               {formatDate(item.createdAt)}
             </span>
           </div>
-          <a
-            href={item.url ?? '#'}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 group/title"
-          >
-            <h3 className="text-base lg:text-xl font-bold text-on-surface group-hover/title:text-primary transition-colors cursor-pointer leading-snug line-clamp-2 lg:line-clamp-none">
-              {item.title}
-            </h3>
-            <ExternalLink className="w-3.5 h-3.5 text-on-surface-variant/40 opacity-0 group-hover/title:opacity-100 transition-opacity shrink-0" />
-          </a>
+          {item.url ? (
+            <a href={item.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 group/title">
+              <h3 className="text-base lg:text-xl font-bold text-on-surface group-hover/title:text-primary transition-colors cursor-pointer leading-snug line-clamp-2 lg:line-clamp-none">
+                {item.title}
+              </h3>
+              <ExternalLink className="w-3.5 h-3.5 text-on-surface-variant/40 opacity-0 group-hover/title:opacity-100 transition-opacity shrink-0" />
+            </a>
+          ) : (
+            <div className="flex items-center gap-1.5">
+              <h3 className="text-base lg:text-xl font-bold text-on-surface leading-snug line-clamp-2 lg:line-clamp-none">
+                {item.title}
+              </h3>
+            </div>
+          )}
           <p className="text-on-surface-variant text-sm leading-relaxed max-w-3xl line-clamp-2 sm:line-clamp-3 lg:line-clamp-none">
             {item.excerpt}
           </p>
           <span className="text-xs text-on-surface-variant/60 sm:hidden">{formatDate(item.createdAt)}</span>
         </div>
-        <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity lg:opacity-100">
+        <div className="flex items-center space-x-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 transition-opacity lg:opacity-100">
           <button
-            className="p-2 text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
+            className="p-2 text-on-surface-variant hover:text-primary transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 rounded-sm"
             aria-label="分享收藏"
           >
             <Share2 className="w-4 h-4" />
           </button>
           <button
-            className="p-2 text-on-surface-variant hover:text-error transition-colors cursor-pointer"
+            className="p-2 text-on-surface-variant hover:text-error transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 rounded-sm"
             aria-label="删除收藏"
           >
             <Trash2 className="w-4 h-4" />

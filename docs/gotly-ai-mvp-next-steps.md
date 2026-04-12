@@ -99,6 +99,8 @@ Do not expand into a heavy notes app, task board, knowledge base, browser plugin
 
 ### 4. First-Pass Natural Language Retrieval
 
+**Status:** Completed on 2026-04-12.
+
 **Goal:** Query inputs should return relevant saved assets instead of being rejected as unsupported.
 
 **Recommended first step:**
@@ -131,6 +133,8 @@ Do not expand into a heavy notes app, task board, knowledge base, browser plugin
 - Empty states are deliberate for each filter/page.
 - Icon-only controls have accessible labels.
 - Copy does not imply non-MVP features such as cross-app capture, push notifications, or full task-board behavior.
+
+**Execution plan:** `docs/superpowers/plans/2026-04-12-real-data-ui-pass.md`
 
 ## Non-Goals For The Next Few Steps
 

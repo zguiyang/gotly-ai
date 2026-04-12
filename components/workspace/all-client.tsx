@@ -26,6 +26,13 @@ const filterTabs = [
   { key: 'todo', label: '待办' },
 ] as const
 
+const emptyFilterMessages: Record<string, string> = {
+  all: '暂无内容。先从启动台保存一条记录。',
+  note: '暂无普通记录。先保存一条想法或文本记录。',
+  link: '暂无书签。粘贴链接后会出现在这里。',
+  todo: '暂无待办。输入带有处理意图的内容后会出现在这里。',
+}
+
 function getDateGroup(date: Date): DateGroup {
   const value = new Date(date)
   const now = new Date()
@@ -129,9 +136,9 @@ function AssetItem({ asset }: { asset: AssetListItem }) {
           {asset.timeText || formatRelativeTime(asset.createdAt)}
         </span>
       </div>
-      <div className="ml-2 lg:ml-6 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="ml-2 lg:ml-6 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 transition-opacity">
         <button
-          className="p-1 text-on-surface-variant hover:text-primary rounded-sm transition-colors cursor-pointer"
+          className="p-1 text-on-surface-variant hover:text-primary rounded-sm transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           aria-label="更多操作"
         >
           <MoreVertical className="w-4 h-4" />
@@ -212,7 +219,7 @@ export function AllClient({ assets }: { assets: AssetListItem[] }) {
         {!hasAnyAssets && (
           <div className="mt-20 text-center py-12 border-2 border-dashed border-outline-variant/10 rounded-lg">
             <p className="text-sm text-on-surface-variant font-medium">
-              暂无内容。试试搜索框来查找你的记录。
+              {emptyFilterMessages[activeFilter] ?? emptyFilterMessages.all}
             </p>
           </div>
         )}

@@ -85,7 +85,8 @@ function TodoItemComponent({
         </div>
       </div>
       <button
-        className="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-surface-container-high rounded-sm cursor-default"
+        type="button"
+        className="p-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 transition-opacity hover:bg-surface-container-high rounded-sm cursor-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
         aria-label="更多操作"
       >
         <MoreHorizontal className="w-4 h-4 text-on-surface-variant" />
@@ -192,7 +193,7 @@ export function TodosClient({ todos }: { todos: AssetListItem[] }) {
           待办
         </h1>
         <p className="mt-2 text-on-surface-variant text-sm max-w-2xl leading-relaxed">
-          AI 自动捕获的灵感与待办，正在等待你的确认或处理。
+          从统一入口保存的待处理事项，会按时间线索整理在这里。
         </p>
       </div>
 
