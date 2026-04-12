@@ -117,7 +117,7 @@ export function TodosClient({ todos }: { todos: AssetListItem[] }) {
           </span>
         </div>
         <h1 className="text-2xl lg:text-3xl font-bold text-on-surface tracking-tight font-[family-name:var(--font-manrope)]">
-          待处理
+          待办
         </h1>
         <p className="mt-2 text-on-surface-variant text-sm max-w-2xl leading-relaxed">
           AI 自动捕获的灵感与待办，正在等待你的确认或处理。
@@ -130,7 +130,7 @@ export function TodosClient({ todos }: { todos: AssetListItem[] }) {
             <Check className="w-6 h-6 text-primary" />
           </div>
           <p className="text-sm font-medium text-on-surface-variant">
-            暂无待处理事项
+            暂无待办
           </p>
           <p className="text-xs text-on-surface-variant/60 mt-1">
             从统一入口保存新的待办后会出现在这里

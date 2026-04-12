@@ -15,15 +15,15 @@ type DateGroup = 'today' | 'yesterday' | 'older'
 
 const typeLabels: Record<AssetType, string> = {
   note: '普通记录',
-  link: '链接收藏',
-  todo: '待处理',
+  link: '书签',
+  todo: '待办',
 }
 
 const filterTabs = [
-  { key: 'all', label: '全部' },
+  { key: 'all', label: '知识库' },
   { key: 'note', label: '普通记录' },
-  { key: 'link', label: '链接收藏' },
-  { key: 'todo', label: '待处理' },
+  { key: 'link', label: '书签' },
+  { key: 'todo', label: '待办' },
 ] as const
 
 function getDateGroup(date: Date): DateGroup {
@@ -159,7 +159,7 @@ export function AllClient({ assets }: { assets: AssetListItem[] }) {
     <>
       <div className="mb-10">
         <h1 className="text-2xl lg:text-3xl font-bold text-on-surface tracking-tight mb-6 font-[family-name:var(--font-manrope)]">
-          全部内容
+          知识库
         </h1>
         <div className="flex gap-6 border-b border-outline-variant/10 overflow-x-auto">
           {filterTabs.map((tab) => (

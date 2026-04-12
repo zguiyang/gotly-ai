@@ -5,10 +5,10 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 const navItems = [
-  { icon: Bot, label: "入口", href: "/workspace" },
-  { icon: Package, label: "全部内容", href: "/workspace/all" },
-  { icon: Bookmark, label: "收藏链接", href: "/workspace/bookmarks" },
-  { icon: CheckSquare, label: "待处理", href: "/workspace/todos" },
+  { icon: Bot, label: "启动台", href: "/workspace" },
+  { icon: CheckSquare, label: "待办", href: "/workspace/todos" },
+  { icon: Bookmark, label: "书签", href: "/workspace/bookmarks" },
+  { icon: Package, label: "知识库", href: "/workspace/all" },
 ]
 
 export function Sidebar() {
@@ -56,7 +56,7 @@ export function Sidebar() {
 
       <div className="mt-auto pt-6 px-2">
         <p className="text-xs text-on-surface-variant leading-relaxed">
-          AI 正在为您整理 12 条新灵感。
+          Gotly 小管家随时待命
         </p>
       </div>
     </aside>

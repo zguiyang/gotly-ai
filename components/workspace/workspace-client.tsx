@@ -86,8 +86,8 @@ function RecentItem({
 
 const assetTypePresentation = {
   note: { icon: FileText, iconBg: 'bg-primary/10', iconColor: 'text-primary', label: '普通记录' },
-  link: { icon: Link2, iconBg: 'bg-secondary/10', iconColor: 'text-secondary', label: '链接收藏' },
-  todo: { icon: StickyNote, iconBg: 'bg-tertiary/10', iconColor: 'text-tertiary', label: '待处理' },
+  link: { icon: Link2, iconBg: 'bg-secondary/10', iconColor: 'text-secondary', label: '书签' },
+  todo: { icon: StickyNote, iconBg: 'bg-tertiary/10', iconColor: 'text-tertiary', label: '待办' },
 }
 
 function formatAssetTime(date: Date): string {
@@ -180,7 +180,7 @@ export function WorkspaceClient({
           </p>
         ) : inputValue ? (
           <p className="text-xs text-on-surface-variant/60 mt-2 px-4">
-            输入后会保存到全部内容，查询结果会出现在这里
+            输入后会保存到知识库，查询结果会出现在这里
           </p>
         ) : null}
       </section>

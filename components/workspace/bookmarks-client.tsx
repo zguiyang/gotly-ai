@@ -107,7 +107,7 @@ export function BookmarksClient({ bookmarks }: { bookmarks: AssetListItem[] }) {
               </div>
             </div>
             <p className="text-sm text-on-surface-variant font-medium">
-              暂无链接收藏
+              暂无书签
             </p>
           </div>
         )}
