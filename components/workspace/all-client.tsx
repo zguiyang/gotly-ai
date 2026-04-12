@@ -8,22 +8,10 @@ import {
   MoreVertical,
 } from 'lucide-react'
 
+import { type AssetListItem } from '@/shared/assets/assets.types'
+
 type AssetType = 'note' | 'link' | 'todo'
 type DateGroup = 'today' | 'yesterday' | 'older'
-
-type Asset = {
-  id: string
-  icon: React.ElementType
-  iconBg: string
-  iconColor: string
-  title: string
-  excerpt: string
-  tag: string
-  time: string
-  type: AssetType
-  dateGroup: DateGroup
-  completed?: boolean
-}
 
 const typeLabels: Record<AssetType, string> = {
   note: '普通记录',
@@ -31,88 +19,43 @@ const typeLabels: Record<AssetType, string> = {
   todo: '待处理',
 }
 
-const mockAssets: Asset[] = [
-  {
-    id: '1',
-    icon: FileText,
-    iconBg: 'bg-primary/10',
-    iconColor: 'text-primary',
-    title: '2024年Q3产品路线图深度调研笔记',
-    excerpt: '整理了关于AI Agent在企业协作场景下的三个核心落地方向...',
-    tag: '#个人灵感',
-    time: '2小时前',
-    type: 'note',
-    dateGroup: 'today',
-  },
-  {
-    id: '2',
-    icon: Link2,
-    iconBg: 'bg-secondary/10',
-    iconColor: 'text-secondary',
-    title: 'Figma 插件开发的最佳实践指南',
-    excerpt: 'https://developer.figma.com/plugin-docs/intro/',
-    tag: '#技术收藏',
-    time: '4小时前',
-    type: 'link',
-    dateGroup: 'today',
-  },
-  {
-    id: '3',
-    icon: CheckCircle,
-    iconBg: 'bg-tertiary/10',
-    iconColor: 'text-tertiary',
-    title: '提交本周设计周报至内部系统',
-    excerpt: '需要包含三个主要迭代点的性能对比数据截图',
-    tag: '#工作待办',
-    time: '6小时前',
-    type: 'todo',
-    dateGroup: 'today',
-  },
-  {
-    id: '4',
-    icon: FileText,
-    iconBg: 'bg-primary/10',
-    iconColor: 'text-primary',
-    title: '关于"数字游民"生活方式的访谈记录',
-    excerpt: '受访者：Alex, 资深UI设计师，目前在巴厘岛远程办公...',
-    tag: '#个人灵感',
-    time: '昨天 14:20',
-    type: 'note',
-    dateGroup: 'yesterday',
-  },
-  {
-    id: '5',
-    icon: Link2,
-    iconBg: 'bg-secondary/10',
-    iconColor: 'text-secondary',
-    title: 'Tailwind CSS 官方文档 - 容器查询',
-    excerpt: '介绍如何在不使用媒体查询的情况下实现组件级自适应...',
-    tag: '#学习资料',
-    time: '昨天 10:15',
-    type: 'link',
-    dateGroup: 'yesterday',
-  },
-  {
-    id: '6',
-    icon: CheckCircle,
-    iconBg: 'bg-surface-container-high',
-    iconColor: 'text-on-surface-variant',
-    title: '预定下周二去杭州的高铁票',
-    excerpt: '已完成：G7345次列车，商务座',
-    tag: '#生活',
-    time: '上周',
-    type: 'todo',
-    dateGroup: 'older',
-    completed: true,
-  },
-]
-
 const filterTabs = [
   { key: 'all', label: '全部' },
-  { key: 'note', label: '笔记' },
-  { key: 'link', label: '链接' },
-  { key: 'todo', label: '待办' },
-]
+  { key: 'note', label: '普通记录' },
+  { key: 'link', label: '链接收藏' },
+  { key: 'todo', label: '待处理' },
+] as const
+
+function getDateGroup(date: Date): DateGroup {
+  const value = new Date(date)
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000)
+  const itemDay = new Date(value.getFullYear(), value.getMonth(), value.getDate())
+
+  if (itemDay.getTime() === today.getTime()) return 'today'
+  if (itemDay.getTime() === yesterday.getTime()) return 'yesterday'
+  return 'older'
+}
+
+function formatRelativeTime(date: Date): string {
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
+  const seconds = Math.floor(diff / 1000)
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+
+  if (days > 7) {
+    return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
+  }
+  if (days > 1) return `${days}天前`
+  if (days === 1) return '昨天'
+  if (hours > 1) return `${hours}小时前`
+  if (hours === 1) return '1小时前'
+  if (minutes > 1) return `${minutes}分钟前`
+  return '刚刚'
+}
 
 function DateDivider({ label }: { label: string }) {
   return (
@@ -138,15 +81,22 @@ function TypePill({ type }: { type: AssetType }) {
   )
 }
 
-function AssetItem({ asset }: { asset: Asset }) {
-  const Icon = asset.icon
+const assetTypePresentation = {
+  note: { icon: FileText, iconBg: 'bg-primary/10', iconColor: 'text-primary' },
+  link: { icon: Link2, iconBg: 'bg-secondary/10', iconColor: 'text-secondary' },
+  todo: { icon: CheckCircle, iconBg: 'bg-tertiary/10', iconColor: 'text-tertiary' },
+}
+
+function AssetItem({ asset }: { asset: AssetListItem }) {
+  const presentation = assetTypePresentation[asset.type]
+  const Icon = presentation.icon
 
   return (
     <div className="group flex items-center py-5 hover:bg-surface-container-low/50 px-4 -mx-4 rounded-sm transition-all cursor-pointer">
       <div
-        className={`w-10 h-10 flex-shrink-0 rounded-sm flex items-center justify-center mr-6 ${asset.iconBg}`}
+        className={`w-10 h-10 flex-shrink-0 rounded-sm flex items-center justify-center mr-6 ${presentation.iconBg}`}
       >
-        <Icon className={`w-5 h-5 ${asset.iconColor}`} />
+        <Icon className={`w-5 h-5 ${presentation.iconColor}`} />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-3 mb-1 flex-wrap">
@@ -175,7 +125,9 @@ function AssetItem({ asset }: { asset: Asset }) {
         </p>
       </div>
       <div className="ml-4 lg:ml-8 text-right flex-shrink-0">
-        <span className="text-xs font-medium text-on-surface-variant/60">{asset.time}</span>
+        <span className="text-xs font-medium text-on-surface-variant/60">
+          {asset.timeText || formatRelativeTime(asset.createdAt)}
+        </span>
       </div>
       <div className="ml-2 lg:ml-6 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
@@ -189,17 +141,17 @@ function AssetItem({ asset }: { asset: Asset }) {
   )
 }
 
-export function AllClient() {
+export function AllClient({ assets }: { assets: AssetListItem[] }) {
   const [activeFilter, setActiveFilter] = useState<string>('all')
 
   const filteredAssets =
     activeFilter === 'all'
-      ? mockAssets
-      : mockAssets.filter((asset) => asset.type === activeFilter)
+      ? assets
+      : assets.filter((asset) => asset.type === activeFilter)
 
-  const todayAssets = filteredAssets.filter((asset) => asset.dateGroup === 'today')
-  const yesterdayAssets = filteredAssets.filter((asset) => asset.dateGroup === 'yesterday')
-  const olderAssets = filteredAssets.filter((asset) => asset.dateGroup === 'older')
+  const todayAssets = filteredAssets.filter((asset) => getDateGroup(asset.createdAt) === 'today')
+  const yesterdayAssets = filteredAssets.filter((asset) => getDateGroup(asset.createdAt) === 'yesterday')
+  const olderAssets = filteredAssets.filter((asset) => getDateGroup(asset.createdAt) === 'older')
 
   const hasAnyAssets = filteredAssets.length > 0
 

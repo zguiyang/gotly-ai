@@ -1,84 +1,45 @@
 'use client'
 
-import { useState } from 'react'
-import { Share2, Trash2, Bookmark, ChevronDown, ExternalLink } from 'lucide-react'
+import { Share2, Trash2, Bookmark, ExternalLink } from 'lucide-react'
 
-type BookmarkCategory = 'article' | 'tech' | 'design' | 'todo' | 'all'
+import { type AssetListItem } from '@/shared/assets/assets.types'
 
-type BookmarkItem = {
-  id: string
-  source: string
-  title: string
-  summary: string
-  time: string
-  href: string
-  category: Exclude<BookmarkCategory, 'all'>
+function getHostname(url: string | null) {
+  if (!url) return 'saved link'
+
+  try {
+    return new URL(url).hostname
+  } catch {
+    return 'saved link'
+  }
 }
 
-const mockBookmarks: BookmarkItem[] = [
-  {
-    id: '1',
-    source: 'github.com',
-    title: 'Transformers.js: 浏览器端的机器学习新纪元',
-    summary:
-      'AI 摘要：本文深入探讨了如何利用 WebAssembly 在浏览器中直接运行大型语言模型，消除了后端推理延迟。重点介绍了 CPU 优化策略和内存管理，非常适合前端工程化背景。',
-    time: '3 小时前收藏',
-    href: 'https://github.com',
-    category: 'tech',
-  },
-  {
-    id: '2',
-    source: 'medium.com',
-    title: '现代极简主义：如何在 UI 设计中找回"呼吸感"',
-    summary:
-      'AI 摘要：作者批判了现代 UI 中过度拥挤的卡片设计，提倡回归"纸本感"的排版美学。文中提到的非对称布局技巧可直接应用于 Gotly 的视觉迭代。',
-    time: '昨天 14:20 收藏',
-    href: 'https://medium.com',
-    category: 'design',
-  },
-  {
-    id: '3',
-    source: 'zhihu.com',
-    title: '深度学习系统架构的演进历程与未来趋势',
-    summary:
-      'AI 摘要：梳理了从 AlexNet 到 GPT-4 的算力分配逻辑。收藏价值在于其对分布式训练中网络瓶颈的量化分析，可作为技术选型参考。',
-    time: '2023年10月24日 收藏',
-    href: 'https://zhihu.com',
-    category: 'article',
-  },
-  {
-    id: '4',
-    source: 'notion.so',
-    title: '2024 年产品路线图规划：从数据驱动到 AI 驱动',
-    summary:
-      'AI 摘要：一套完整的产品策略模板。笔记标注了关于"零磨损交互"的三个关键点，建议在 Q1 开发周期中复用相关逻辑。',
-    time: '2023年10月22日 收藏',
-    href: 'https://notion.so',
-    category: 'todo',
-  },
-]
+function formatDate(date: Date): string {
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
 
-const filterTabs: { key: BookmarkCategory; label: string }[] = [
-  { key: 'all', label: '全部收藏' },
-  { key: 'article', label: '文章阅读' },
-  { key: 'tech', label: '技术文档' },
-  { key: 'design', label: '设计灵感' },
-  { key: 'todo', label: '待办整理' },
-]
+  if (days === 0) return '今天收藏'
+  if (days === 1) return '昨天收藏'
+  if (days < 7) return `${days}天前收藏`
+  return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }) + '收藏'
+}
 
-function BookmarkItem({ item }: { item: BookmarkItem }) {
+function BookmarkItem({ item }: { item: AssetListItem }) {
   return (
     <div className="group py-6 lg:py-8 transition-all hover:bg-surface-container-low/50 -mx-4 px-4 rounded-lg">
       <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
         <div className="flex-1 space-y-2 min-w-0">
           <div className="flex items-center space-x-3">
             <span className="text-xs font-semibold uppercase tracking-widest text-primary-container bg-primary/10 px-2 py-0.5 rounded-sm">
-              {item.source}
+              {getHostname(item.url)}
             </span>
-            <span className="text-xs text-on-surface-variant/60 hidden sm:block">{item.time}</span>
+            <span className="text-xs text-on-surface-variant/60 hidden sm:block">
+              {formatDate(item.createdAt)}
+            </span>
           </div>
           <a
-            href={item.href}
+            href={item.url ?? '#'}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 group/title"
@@ -89,9 +50,9 @@ function BookmarkItem({ item }: { item: BookmarkItem }) {
             <ExternalLink className="w-3.5 h-3.5 text-on-surface-variant/40 opacity-0 group-hover/title:opacity-100 transition-opacity shrink-0" />
           </a>
           <p className="text-on-surface-variant text-sm leading-relaxed max-w-3xl line-clamp-2 sm:line-clamp-3 lg:line-clamp-none">
-            {item.summary}
+            {item.excerpt}
           </p>
-          <span className="text-xs text-on-surface-variant/60 sm:hidden">{item.time}</span>
+          <span className="text-xs text-on-surface-variant/60 sm:hidden">{formatDate(item.createdAt)}</span>
         </div>
         <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity lg:opacity-100">
           <button
@@ -116,14 +77,7 @@ function Divider() {
   return <div className="h-px bg-outline-variant opacity-10 mx-4" />
 }
 
-export function BookmarksClient() {
-  const [activeFilter, setActiveFilter] = useState<BookmarkCategory>('all')
-
-  const filteredBookmarks =
-    activeFilter === 'all'
-      ? mockBookmarks
-      : mockBookmarks.filter((b) => b.category === activeFilter)
-
+export function BookmarksClient({ bookmarks }: { bookmarks: AssetListItem[] }) {
   return (
     <>
       <div className="mb-10">
@@ -135,33 +89,17 @@ export function BookmarksClient() {
         </p>
       </div>
 
-      <div className="flex items-center space-x-6 mb-8 lg:mb-10 overflow-x-auto pb-2 scrollbar-hide">
-        {filterTabs.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveFilter(tab.key)}
-            className={`pb-2 whitespace-nowrap text-sm font-medium transition-colors relative ${
-              activeFilter === tab.key
-                ? 'text-primary font-bold border-b-2 border-primary'
-                : 'text-on-surface-variant hover:text-on-surface'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
       <div className="max-w-6xl">
         <div className="space-y-0">
-          {filteredBookmarks.map((item, index) => (
+          {bookmarks.map((item, index) => (
             <div key={item.id}>
               <BookmarkItem item={item} />
-              {index < filteredBookmarks.length - 1 && <Divider />}
+              {index < bookmarks.length - 1 && <Divider />}
             </div>
           ))}
         </div>
 
-        {filteredBookmarks.length === 0 && (
+        {bookmarks.length === 0 && (
           <div className="mt-20 text-center py-12">
             <div className="flex justify-center mb-4">
               <div className="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center">
@@ -169,17 +107,8 @@ export function BookmarksClient() {
               </div>
             </div>
             <p className="text-sm text-on-surface-variant font-medium">
-              暂无收藏内容
+              暂无链接收藏
             </p>
-          </div>
-        )}
-
-        {filteredBookmarks.length > 0 && (
-          <div className="mt-12 lg:mt-16 flex justify-center">
-            <button className="text-sm font-medium text-primary hover:underline flex items-center space-x-2 cursor-pointer">
-              <span>加载更多收藏</span>
-              <ChevronDown className="w-4 h-4" />
-            </button>
           </div>
         )}
       </div>

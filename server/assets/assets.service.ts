@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { desc, eq } from 'drizzle-orm'
+import { and, desc, eq } from 'drizzle-orm'
 
 import { db } from '@/server/db'
 import { assets, type Asset } from '@/server/db/schema'
@@ -8,6 +8,45 @@ import { classifyAssetInput } from './assets.classifier'
 import { type AssetListItem } from '@/shared/assets/assets.types'
 
 export { type AssetListItem }
+
+type AssetType = Asset['type']
+
+type ListAssetsOptions = {
+  userId: string
+  type?: AssetType
+  limit?: number
+}
+
+function clampAssetListLimit(limit = 50) {
+  return Math.min(Math.max(1, limit), 100)
+}
+
+export async function listAssets({
+  userId,
+  type,
+  limit = 50,
+}: ListAssetsOptions): Promise<AssetListItem[]> {
+  const conditions = type
+    ? and(eq(assets.userId, userId), eq(assets.type, type))
+    : eq(assets.userId, userId)
+
+  const rows = await db
+    .select()
+    .from(assets)
+    .where(conditions)
+    .orderBy(desc(assets.createdAt))
+    .limit(clampAssetListLimit(limit))
+
+  return rows.map(toAssetListItem)
+}
+
+export function listLinkAssets(userId: string, limit = 50) {
+  return listAssets({ userId, type: 'link', limit })
+}
+
+export function listTodoAssets(userId: string, limit = 50) {
+  return listAssets({ userId, type: 'todo', limit })
+}
 
 export function toAssetListItem(asset: Asset): AssetListItem {
   return {
