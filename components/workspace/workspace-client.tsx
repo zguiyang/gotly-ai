@@ -9,7 +9,10 @@ import {
 } from 'lucide-react'
 
 import { callAction } from '@/components/actions/call-action'
-import { type AssetListItem } from '@/shared/assets/assets.types'
+import {
+  type AssetListItem,
+  type AssetQueryResult,
+} from '@/shared/assets/assets.types'
 import { createWorkspaceAssetAction } from '@/app/workspace/actions'
 
 function QuickActionChips({
@@ -84,6 +87,52 @@ function RecentItem({
   )
 }
 
+function QueryResults({
+  query,
+  results,
+}: {
+  query: string
+  results: AssetListItem[]
+}) {
+  return (
+    <section className="mb-8">
+      <div className="flex items-center gap-4 mb-2">
+        <h2 className="text-xs font-medium uppercase tracking-wider text-on-surface-variant">
+          查询结果
+        </h2>
+        <div className="flex-1 h-px bg-outline-variant/20" />
+      </div>
+      <p className="text-xs text-on-surface-variant/60 mb-3">
+        {`"${query}"`}
+      </p>
+      {results.length === 0 ? (
+        <p className="text-sm text-on-surface-variant">
+          没有找到相关内容。换个关键词试试。
+        </p>
+      ) : (
+        <div>
+          {results.map((asset) => {
+            const presentation = assetTypePresentation[asset.type]
+            return (
+              <RecentItem
+                key={asset.id}
+                icon={presentation.icon}
+                iconBg={presentation.iconBg}
+                iconColor={presentation.iconColor}
+                title={asset.title}
+                excerpt={asset.excerpt}
+                time={formatAssetTime(new Date(asset.createdAt))}
+                type={presentation.label}
+                timeText={asset.timeText}
+              />
+            )
+          })}
+        </div>
+      )}
+    </section>
+  )
+}
+
 const assetTypePresentation = {
   note: { icon: FileText, iconBg: 'bg-primary/10', iconColor: 'text-primary', label: '普通记录' },
   link: { icon: Link2, iconBg: 'bg-secondary/10', iconColor: 'text-secondary', label: '书签' },
@@ -108,6 +157,7 @@ export function WorkspaceClient({
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState<string | null>(null)
   const [recentItems, setRecentItems] = useState(recentAssets)
+  const [queryResult, setQueryResult] = useState<AssetQueryResult | null>(null)
 
   async function handleSubmit() {
     const text = inputValue.trim()
@@ -121,13 +171,21 @@ export function WorkspaceClient({
     setMessage(null)
 
     try {
-      const nextItem = await callAction(() => createWorkspaceAssetAction(text), {
-        loading: '保存中...',
-        success: '已保存。',
-        error: '保存失败，请重试。',
+      const result = await callAction(() => createWorkspaceAssetAction(text), {
+        loading: '处理中...',
+        success: '已完成。',
+        error: '处理失败，请重试。',
       })
-      setRecentItems((items) => [nextItem, ...items].slice(0, 6))
-      setInputValue('')
+
+      if (result.kind === 'created') {
+        setRecentItems((items) => [result.asset, ...items].slice(0, 6))
+        setQueryResult(null)
+        setInputValue('')
+        setStatus('success')
+        return
+      }
+
+      setQueryResult({ query: result.query, results: result.results })
       setStatus('success')
     } catch {
       setStatus('error')
@@ -184,6 +242,10 @@ export function WorkspaceClient({
           </p>
         ) : null}
       </section>
+
+      {queryResult ? (
+        <QueryResults query={queryResult.query} results={queryResult.results} />
+      ) : null}
 
       <section>
         <div className="flex items-center gap-4 mb-2">

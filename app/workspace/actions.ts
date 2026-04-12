@@ -5,11 +5,12 @@ import { revalidatePath } from 'next/cache'
 import { ActionError } from '@/server/actions/action-error'
 import { runServerAction } from '@/server/actions/run-server-action'
 import { requireUser } from '@/server/auth/session'
-import { createAsset, setTodoCompletion, type AssetListItem } from '@/server/assets/assets.service'
+import { createAsset, searchAssets, setTodoCompletion, type AssetListItem } from '@/server/assets/assets.service'
+import { type WorkspaceAssetActionResult } from '@/shared/assets/assets.types'
 
 export async function createWorkspaceAssetAction(
   input: unknown
-): Promise<AssetListItem> {
+): Promise<WorkspaceAssetActionResult> {
   return runServerAction('workspace.createAsset', async () => {
     const user = await requireUser()
 
@@ -25,14 +26,21 @@ export async function createWorkspaceAssetAction(
     const result = await createAsset({ userId: user.id, text: trimmed })
 
     if (result.kind === 'query-not-supported') {
-      throw new ActionError(
-        '查询功能下一步接入，先试试输入一条记录或链接。',
-        'QUERY_NOT_SUPPORTED'
-      )
+      const results = await searchAssets({
+        userId: user.id,
+        query: trimmed,
+        limit: 5,
+      })
+
+      return {
+        kind: 'query',
+        query: trimmed,
+        results,
+      }
     }
 
     revalidatePath('/workspace')
-    return result.asset
+    return { kind: 'created', asset: result.asset }
   })
 }
 

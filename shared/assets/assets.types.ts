@@ -9,3 +9,12 @@ export type AssetListItem = {
   completed: boolean
   createdAt: Date
 }
+
+export type AssetQueryResult = {
+  query: string
+  results: AssetListItem[]
+}
+
+export type WorkspaceAssetActionResult =
+  | { kind: 'created'; asset: AssetListItem }
+  | { kind: 'query'; query: string; results: AssetListItem[] }
