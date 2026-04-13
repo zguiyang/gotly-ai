@@ -158,3 +158,11 @@ export function parseAssetTimeText(
 
   return { timeText, dueAt: null, rangeHint: null }
 }
+
+export function parseAssetSearchTimeHint(
+  hint: string | null | undefined,
+  now = new Date()
+) {
+  if (!hint) return null
+  return parseAssetTimeText(hint, now).rangeHint
+}
