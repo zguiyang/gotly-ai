@@ -26,5 +26,6 @@ export const serverEnv = {
   aiGateway: {
     apiKey: env.AI_GATEWAY_API_KEY,
     url: env.AI_GATEWAY_URL,
+    modelName: env.AI_MODEL_NAME,
   },
 } as const

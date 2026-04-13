@@ -28,6 +28,7 @@ export const serverOnlyEnvSchema = z.object({
   AI_GATEWAY_URL: optionalNonEmptyString.pipe(
     z.string().url('AI_GATEWAY_URL must be a valid URL').optional()
   ),
+  AI_MODEL_NAME: optionalNonEmptyString,
 })
 
 export const serverEnvSchema = publicEnvSchema.merge(serverOnlyEnvSchema)

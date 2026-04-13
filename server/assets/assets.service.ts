@@ -4,7 +4,7 @@ import { and, desc, eq } from 'drizzle-orm'
 
 import { db } from '@/server/db'
 import { assets, type Asset } from '@/server/db/schema'
-import { classifyAssetInput } from './assets.classifier'
+import { interpretAssetInput } from './assets.interpreter'
 import { type AssetListItem } from '@/shared/assets/assets.types'
 
 export { type AssetListItem }
@@ -202,10 +202,44 @@ export async function createAsset(input: {
     throw new Error('EMPTY_INPUT')
   }
 
-  const classification = classifyAssetInput(trimmed)
+  const command = await interpretAssetInput(trimmed)
 
-  if (classification.kind === 'query') {
+  if (command.intent === 'search_assets') {
     return { kind: 'query-not-supported' }
+  }
+
+  if (command.intent === 'create_link') {
+    const [created] = await db
+      .insert(assets)
+      .values({
+        id: crypto.randomUUID(),
+        userId: input.userId,
+        originalText: trimmed,
+        type: 'link',
+        url: command.url,
+        timeText: command.timeText,
+        dueAt: command.dueAt,
+      })
+      .returning()
+
+    return { kind: 'created', asset: toAssetListItem(created) }
+  }
+
+  if (command.intent === 'create_todo') {
+    const [created] = await db
+      .insert(assets)
+      .values({
+        id: crypto.randomUUID(),
+        userId: input.userId,
+        originalText: trimmed,
+        type: 'todo',
+        url: command.url,
+        timeText: command.timeText,
+        dueAt: command.dueAt,
+      })
+      .returning()
+
+    return { kind: 'created', asset: toAssetListItem(created) }
   }
 
   const [created] = await db
@@ -214,10 +248,10 @@ export async function createAsset(input: {
       id: crypto.randomUUID(),
       userId: input.userId,
       originalText: trimmed,
-      type: classification.type,
-      url: classification.url,
-      timeText: classification.timeText,
-      dueAt: classification.dueAt,
+      type: 'note',
+      url: null,
+      timeText: command.timeText,
+      dueAt: command.dueAt,
     })
     .returning()
 

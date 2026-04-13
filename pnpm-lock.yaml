@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@ai-sdk/alibaba':
+        specifier: ^1.0.17
+        version: 1.0.17(zod@4.3.6)
       '@ai-sdk/react':
         specifier: ^3.0.160
         version: 3.0.160(react@19.2.4)(zod@4.3.6)
@@ -117,8 +120,20 @@ importers:
 
 packages:
 
+  '@ai-sdk/alibaba@1.0.17':
+    resolution: {integrity: sha512-ZbE+U5bWz2JBc5DERLowx5+TKbjGBE93LqKZAWvuEn7HOSQMraxFMZuc0ST335QZJAyfBOzh7m1mPQ+y7EaaoA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+
   '@ai-sdk/gateway@3.0.95':
     resolution: {integrity: sha512-ZmUNNbZl3V42xwQzPaNUi+s8eqR2lnrxf0bvB6YbLXpLjHYv0k2Y78t12cNOfY0bxGeuVVTLyk856uLuQIuXEQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+
+  '@ai-sdk/openai-compatible@2.0.41':
+    resolution: {integrity: sha512-kNAGINk71AlOXx10Dq/PXw4t/9XjdK8uxfpVElRwtSFMdeSiLVt58p9TPx4/FJD+hxZuVhvxYj9r42osxWq79g==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -4026,11 +4041,24 @@ packages:
 
 snapshots:
 
+  '@ai-sdk/alibaba@1.0.17(zod@4.3.6)':
+    dependencies:
+      '@ai-sdk/openai-compatible': 2.0.41(zod@4.3.6)
+      '@ai-sdk/provider': 3.0.8
+      '@ai-sdk/provider-utils': 4.0.23(zod@4.3.6)
+      zod: 4.3.6
+
   '@ai-sdk/gateway@3.0.95(zod@4.3.6)':
     dependencies:
       '@ai-sdk/provider': 3.0.8
       '@ai-sdk/provider-utils': 4.0.23(zod@4.3.6)
       '@vercel/oidc': 3.1.0
+      zod: 4.3.6
+
+  '@ai-sdk/openai-compatible@2.0.41(zod@4.3.6)':
+    dependencies:
+      '@ai-sdk/provider': 3.0.8
+      '@ai-sdk/provider-utils': 4.0.23(zod@4.3.6)
       zod: 4.3.6
 
   '@ai-sdk/provider-utils@4.0.23(zod@4.3.6)':
