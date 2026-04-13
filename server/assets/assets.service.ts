@@ -81,7 +81,7 @@ function getAssetSearchTerms(query: string) {
 }
 
 const ASSET_TYPE_TERMS: Record<AssetType, string[]> = {
-  note: ['普通记录', '记录', '笔记', '想法', '文案'],
+  note: ['记录', '笔记', '想法', '文案'],
   link: ['书签', '链接', '文章', '收藏', '资料'],
   todo: ['待办', '待处理', '任务', '事项', '要做'],
 }

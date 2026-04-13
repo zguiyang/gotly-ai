@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation"
 
 const navItems = [
   { icon: Bot, label: "启动台", href: "/workspace" },
-  { icon: FileText, label: "普通记录", href: "/workspace/notes" },
+  { icon: FileText, label: "笔记", href: "/workspace/notes" },
   { icon: CheckSquare, label: "待办", href: "/workspace/todos" },
   { icon: Bookmark, label: "书签", href: "/workspace/bookmarks" },
   { icon: Package, label: "知识库", href: "/workspace/all" },

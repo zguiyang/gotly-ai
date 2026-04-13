@@ -134,7 +134,7 @@ function QueryResults({
 }
 
 const assetTypePresentation = {
-  note: { icon: FileText, iconBg: 'bg-primary/10', iconColor: 'text-primary', label: '普通记录' },
+  note: { icon: FileText, iconBg: 'bg-primary/10', iconColor: 'text-primary', label: '笔记' },
   link: { icon: Link2, iconBg: 'bg-secondary/10', iconColor: 'text-secondary', label: '书签' },
   todo: { icon: StickyNote, iconBg: 'bg-tertiary/10', iconColor: 'text-tertiary', label: '待办' },
 }

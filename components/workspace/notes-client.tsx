@@ -54,7 +54,7 @@ function EmptyState() {
       <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-surface-container-low flex items-center justify-center">
         <FileText className="w-6 h-6 text-on-surface-variant/40" />
       </div>
-      <p className="text-sm text-on-surface-variant font-medium">暂无普通记录</p>
+      <p className="text-sm text-on-surface-variant font-medium">暂无笔记</p>
       <p className="text-xs text-on-surface-variant/60 mt-2">
         从启动台/统一入口保存一条文本记录
       </p>
@@ -67,7 +67,7 @@ export function NotesClient({ notes }: { notes: AssetListItem[] }) {
     <div className="max-w-6xl mx-auto">
       <div className="mb-8">
         <h1 className="text-2xl lg:text-3xl font-bold text-on-surface tracking-tight mb-2 font-[family-name:var(--font-manrope)]">
-          普通记录
+          笔记
         </h1>
         <p className="text-sm text-on-surface-variant">
           从统一入口保存的文本记录，会整理在这里
