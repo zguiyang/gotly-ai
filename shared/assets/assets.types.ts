@@ -32,7 +32,23 @@ export type TodoReviewResult = {
   generatedAt: Date
 }
 
+export type NoteSummarySource = {
+  id: string
+  title: string
+  createdAt: Date
+}
+
+export type NoteSummaryResult = {
+  headline: string
+  summary: string
+  keyPoints: string[]
+  sourceAssetIds: string[]
+  sources: NoteSummarySource[]
+  generatedAt: Date
+}
+
 export type WorkspaceAssetActionResult =
   | { kind: 'created'; asset: AssetListItem }
   | { kind: 'query'; query: string; results: AssetListItem[] }
   | { kind: 'todo-review'; review: TodoReviewResult }
+  | { kind: 'note-summary'; summary: NoteSummaryResult }

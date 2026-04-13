@@ -12,20 +12,24 @@ import { callAction } from '@/components/actions/call-action'
 import {
   type AssetListItem,
   type AssetQueryResult,
+  type NoteSummaryResult,
   type TodoReviewResult,
 } from '@/shared/assets/assets.types'
 import {
   createWorkspaceAssetAction,
   reviewUnfinishedTodosAction,
+  summarizeRecentNotesAction,
 } from '@/app/workspace/actions'
 
 function QuickActionChips({
   onChipClick,
   onReviewTodos,
+  onSummarizeNotes,
   disabled,
 }: {
   onChipClick: (text: string) => void
   onReviewTodos: () => void
+  onSummarizeNotes: () => void
   disabled: boolean
 }) {
   const chips = [
@@ -52,6 +56,14 @@ function QuickActionChips({
         className="px-3 py-1.5 text-xs font-medium bg-primary text-on-primary hover:bg-primary/90 rounded-sm transition-colors duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
       >
         复盘未完成待办
+      </button>
+      <button
+        type="button"
+        onClick={onSummarizeNotes}
+        disabled={disabled}
+        className="px-3 py-1.5 text-xs font-medium bg-secondary text-on-secondary hover:bg-secondary/90 rounded-sm transition-colors duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        总结最近笔记
       </button>
     </div>
   )
@@ -193,6 +205,50 @@ function TodoReviewPanel({ review }: { review: TodoReviewResult }) {
   )
 }
 
+function NoteSummaryPanel({ summary }: { summary: NoteSummaryResult }) {
+  return (
+    <section className="mb-8">
+      <div className="flex items-center gap-4 mb-2">
+        <h2 className="text-xs font-medium uppercase tracking-wider text-on-surface-variant">
+          笔记摘要
+        </h2>
+        <div className="flex-1 h-px bg-outline-variant/20" />
+      </div>
+      <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-lg p-4">
+        <h3 className="text-sm font-semibold text-on-surface">
+          {summary.headline}
+        </h3>
+        <p className="text-sm text-on-surface-variant mt-2 leading-relaxed">
+          {summary.summary}
+        </p>
+        {summary.keyPoints.length > 0 ? (
+          <ul className="mt-3 space-y-1">
+            {summary.keyPoints.map((point, index) => (
+              <li key={`${point}-${index}`} className="text-sm text-on-surface">
+                {index + 1}. {point}
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        {summary.sources.length > 0 ? (
+          <div className="mt-4 pt-3 border-t border-outline-variant/10">
+            <p className="text-xs font-medium text-on-surface-variant mb-2">
+              来源
+            </p>
+            <div className="space-y-1">
+              {summary.sources.map((source) => (
+                <p key={source.id} className="text-xs text-on-surface-variant/80">
+                  {source.title}
+                </p>
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </div>
+    </section>
+  )
+}
+
 const assetTypePresentation = {
   note: { icon: FileText, iconBg: 'bg-primary/10', iconColor: 'text-primary', label: '笔记' },
   link: { icon: Link2, iconBg: 'bg-secondary/10', iconColor: 'text-secondary', label: '书签' },
@@ -219,6 +275,7 @@ export function WorkspaceClient({
   const [recentItems, setRecentItems] = useState(recentAssets)
   const [queryResult, setQueryResult] = useState<AssetQueryResult | null>(null)
   const [todoReview, setTodoReview] = useState<TodoReviewResult | null>(null)
+  const [noteSummary, setNoteSummary] = useState<NoteSummaryResult | null>(null)
 
   async function handleSubmit() {
     const text = inputValue.trim()
@@ -242,6 +299,7 @@ export function WorkspaceClient({
         setRecentItems((items) => [result.asset, ...items].slice(0, 6))
         setQueryResult(null)
         setTodoReview(null)
+        setNoteSummary(null)
         setInputValue('')
         setStatus('success')
         return
@@ -250,8 +308,10 @@ export function WorkspaceClient({
       if (result.kind === 'query') {
         setQueryResult({ query: result.query, results: result.results })
         setTodoReview(null)
+        setNoteSummary(null)
       }
       setTodoReview(null)
+      setNoteSummary(null)
       setStatus('success')
     } catch {
       setStatus('error')
@@ -273,6 +333,34 @@ export function WorkspaceClient({
 
       if (result.kind === 'todo-review') {
         setTodoReview(result.review)
+        setQueryResult(null)
+        setNoteSummary(null)
+        setStatus('success')
+        return
+      }
+
+      setStatus('success')
+    } catch {
+      setStatus('error')
+    }
+  }
+
+  async function handleSummarizeNotes() {
+    if (status === 'submitting') return
+
+    setStatus('submitting')
+    setMessage(null)
+
+    try {
+      const result = await callAction(() => summarizeRecentNotesAction(), {
+        loading: '正在总结笔记...',
+        success: '笔记摘要已生成。',
+        error: '笔记摘要失败，请重试。',
+      })
+
+      if (result.kind === 'note-summary') {
+        setNoteSummary(result.summary)
+        setTodoReview(null)
         setQueryResult(null)
         setStatus('success')
         return
@@ -303,6 +391,7 @@ export function WorkspaceClient({
         <QuickActionChips
           onChipClick={(text) => setInputValue(text)}
           onReviewTodos={handleReviewTodos}
+          onSummarizeNotes={handleSummarizeNotes}
           disabled={status === 'submitting'}
         />
       </div>
@@ -344,6 +433,8 @@ export function WorkspaceClient({
         <QueryResults query={queryResult.query} results={queryResult.results} />
       ) : todoReview ? (
         <TodoReviewPanel review={todoReview} />
+      ) : noteSummary ? (
+        <NoteSummaryPanel summary={noteSummary} />
       ) : null}
 
       <section>

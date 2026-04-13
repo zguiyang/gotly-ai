@@ -7,6 +7,7 @@ import { runServerAction } from '@/server/actions/run-server-action'
 import { requireUser } from '@/server/auth/session'
 import { createAsset, searchAssets, setTodoCompletion, type AssetListItem } from '@/server/assets/assets.service'
 import { reviewUnfinishedTodos } from '@/server/assets/assets.todo-review'
+import { summarizeRecentNotes } from '@/server/assets/assets.note-summary'
 import { type WorkspaceAssetActionResult } from '@/shared/assets/assets.types'
 
 export async function createWorkspaceAssetAction(
@@ -100,5 +101,13 @@ export async function reviewUnfinishedTodosAction(): Promise<WorkspaceAssetActio
     const user = await requireUser()
     const review = await reviewUnfinishedTodos(user.id)
     return { kind: 'todo-review', review }
+  })
+}
+
+export async function summarizeRecentNotesAction(): Promise<WorkspaceAssetActionResult> {
+  return runServerAction('workspace.summarizeRecentNotes', async () => {
+    const user = await requireUser()
+    const summary = await summarizeRecentNotes(user.id)
+    return { kind: 'note-summary', summary }
   })
 }
