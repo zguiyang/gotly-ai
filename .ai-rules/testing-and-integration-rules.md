@@ -78,6 +78,17 @@ Rules:
 3. Keep route files thin and test domain logic below the route layer when possible.
 4. When pages render data from server-side logic, prefer testing the underlying server behavior directly in service-layer tests instead of routing internal page data through HTTP just for testability.
 
+### 5.1 Next.js Runtime Debugging Preference
+
+For debugging and manual verification of Next.js behavior, prefer the real running application over custom scripts.
+
+Rules:
+
+1. Use browser-backed verification as the first choice for user flows, route rendering, Server Actions, hydration behavior, console errors, and network-visible failures.
+2. Use Next.js runtime diagnostics as supporting evidence when they clarify what the browser shows.
+3. Avoid writing ad hoc scripts to simulate Next.js behavior when a real page interaction can verify the same claim.
+4. Script-level verification is appropriate when the subject is a pure JavaScript utility, a database migration check, or a delivered CLI/maintenance script such as a seed or backfill command.
+
 ## 6. Service-Layer Integration Testing Rule
 
 Integration tests become important once business logic grows in `server/`.

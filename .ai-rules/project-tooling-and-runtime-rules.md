@@ -58,6 +58,18 @@ When a task requires checking the UI or viewing a page:
 4. If the page cannot be opened because the relevant service is not running, tell the user what needs to be started.
 5. Do not start the service automatically just to inspect the page unless the user has approved that action.
 
+### 4.1 Next.js Debugging Verification Preference
+
+When debugging or validating Next.js application behavior, prefer proving the behavior through the actual running page before writing or running custom scripts.
+
+Rules:
+
+1. Use a real browser against the actual page as the first-choice verification path for route behavior, Server Actions, rendered UI state, hydration, console errors, and user-facing flows.
+2. Use Next.js DevTools MCP or other runtime diagnostics to support browser verification when they materially improve the diagnosis.
+3. Do not write ad hoc scripts to test Next.js behavior when the same claim can be verified through the browser and the running app.
+4. Direct script execution is appropriate when the script or CLI is itself the delivered artifact, such as a migration helper, backfill command, seed command, one-off maintenance command, or a pure JavaScript utility whose behavior is independent of Next.js runtime rendering.
+5. Static checks such as `pnpm lint`, TypeScript checks, and migration checks remain useful, but they do not replace browser-backed verification for user-visible Next.js behavior.
+
 ## 5. Need-Based Tool Selection Rule
 
 Skills, MCP services, browser tools, runtime inspection, documentation lookup, shell commands, and other agent tools should be used deliberately, based on the task's risk and uncertainty.
@@ -69,7 +81,7 @@ Rules:
 1. Start with the smallest sufficient context: the user's request, relevant diffs, nearby code, and the applicable `.ai-rules` files.
 2. Use the smallest relevant set of skills, MCP services, and tools needed to answer or implement the task correctly.
 3. Escalate to additional tools when they reduce real uncertainty, such as unclear framework behavior, version-sensitive APIs, runtime-only failures, hydration or server/client boundary issues, browser-visible UI state, CI failures, dependency behavior, or behavior that cannot be verified from code alone.
-4. Do not open browser or runtime inspection tools merely because the task touches UI or Next.js. Use them when rendered behavior, console/runtime errors, network state, or actual page state is relevant to the question.
+4. For Next.js behavior, prefer browser-backed verification when the question concerns rendered behavior, Server Actions, hydration, console/runtime errors, network state, or actual page state. Do not replace that verification with ad hoc scripts unless the script itself is the delivered artifact or the behavior is independent of the running app.
 5. Do not repeatedly invoke multiple overlapping skills or MCP services when one relevant source gives enough confidence.
 6. Do not skip tools when they are necessary for correctness. If the code path is ambiguous, source documentation is version-sensitive, or runtime state is needed, use the appropriate skill, MCP service, or verification tool.
 7. For code review, begin with static review of the diff and related code. Use additional tools only when the review question requires them, such as reproducing a failing state, checking framework/runtime behavior, inspecting a rendered page, or validating a non-obvious integration boundary.
@@ -118,4 +130,5 @@ Before running commands or implementing code:
 6. Choose tools by need and uncertainty; do not run broad tool chains by default.
 7. Prefer skills first, then MCP, then Context7 when additional guidance is needed.
 8. For browser work, follow the browser priority order defined in Section 4.
-9. For substantial proposals or execution plans, write the durable artifact to an appropriate repository file.
+9. For Next.js debugging and validation, prefer actual browser/page verification over custom scripts, except for pure JavaScript utilities or delivered CLI/script artifacts.
+10. For substantial proposals or execution plans, write the durable artifact to an appropriate repository file.
