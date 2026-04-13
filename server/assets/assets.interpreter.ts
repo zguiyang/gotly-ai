@@ -7,6 +7,7 @@ import { getAssetInputLanguageModel } from './assets.ai-provider'
 import {
   classifyAssetInput,
   extractUrl,
+  hasTodoIntent,
   type AssetInputType,
 } from './assets.classifier'
 
@@ -108,10 +109,21 @@ function normalizeAiResponse(
     return null
   }
 
+  if (deterministicUrl && !(intent === 'create_todo' && hasTodoIntent(originalText))) {
+    return {
+      intent: 'create_link',
+      originalText,
+      url: deterministicUrl,
+      timeText: aiOutput.timeText ?? null,
+      dueAt: parseDueAt(aiOutput.dueAtIso),
+      confidence,
+    }
+  }
+
   if (intent === 'search_assets') {
     return {
       intent: 'search_assets',
-      query: aiOutput.query ?? '',
+      query: aiOutput.query?.trim() || originalText,
       typeHint: aiOutput.typeHint ?? null,
       timeHint: aiOutput.timeText ?? null,
       completionHint: aiOutput.completionHint ?? null,
