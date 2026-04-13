@@ -48,3 +48,7 @@ prd
 .stitch
 docs
 /.playwright-mcp/
+
+# worktrees
+.worktrees
+worktrees
