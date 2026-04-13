@@ -6,6 +6,7 @@ export type AssetListItem = {
   type: 'note' | 'link' | 'todo'
   url: string | null
   timeText: string | null
+  dueAt: Date | null
   completed: boolean
   createdAt: Date
 }

@@ -256,6 +256,7 @@ export function toAssetListItem(asset: Asset): AssetListItem {
     type: asset.type,
     url: asset.url,
     timeText: asset.timeText,
+    dueAt: asset.dueAt,
     completed: asset.completedAt !== null,
     createdAt: asset.createdAt,
   }
