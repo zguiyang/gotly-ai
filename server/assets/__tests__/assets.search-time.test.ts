@@ -1,15 +1,13 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { matchesAssetSearchTimeHint } from '../assets.search-time'
-import { parseAssetSearchTimeHint } from '../assets.time'
-
-const now = new Date('2026-04-13T10:00:00+08:00')
+import { matchesAssetSearchTimeHint } from '../assets.search-time.pure'
 
 test('matches todo search time hints by due date range and broad time text', () => {
-  const thisWeekRange = parseAssetSearchTimeHint('这周', now)
-
-  assert.ok(thisWeekRange)
+  const thisWeekRange = {
+    startsAt: new Date('2026-04-12T16:00:00.000Z'),
+    endsAt: new Date('2026-04-19T16:00:00.000Z'),
+  }
 
   assert.equal(
     matchesAssetSearchTimeHint(

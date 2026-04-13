@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { buildAssetSearchPathLog } from '../assets.search-logging'
+import { buildAssetSearchPathLog } from '../assets.search-logging.pure'
 
 test('builds a sanitized asset search path log payload', () => {
   const payload = buildAssetSearchPathLog({
