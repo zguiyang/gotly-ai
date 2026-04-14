@@ -3,8 +3,9 @@ import 'server-only'
 import { createAlibaba } from '@ai-sdk/alibaba'
 
 import { serverEnv } from '@/server/env'
+import type { AiProvider } from './ai.types'
 
-export function getAssetInputLanguageModel() {
+export function getAiProvider(): AiProvider {
   const { apiKey, url, modelName } = serverEnv.aiGateway
 
   if (!apiKey || !url || !modelName) {

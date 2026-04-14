@@ -2,84 +2,77 @@ import 'server-only'
 
 import { generateText, Output } from 'ai'
 
-import { getAssetInputLanguageModel } from './ai-provider'
-import { aiAssetInputSchema, type AiAssetInput } from './ai-schema'
+import { getAiProvider } from './ai-provider'
+import { parseAiError } from './ai.errors'
+import type { AiResult } from './ai.types'
+import type { ZodSchema } from 'zod'
 import { ASSET_INPUT_MODEL_TIMEOUT_MS } from '@/server/config/constants'
 
-const SYSTEM_PROMPT = `You are a workspace input classifier for a personal productivity app called Gotly.
-
-Classify the user input into exactly one of these intents:
-- create_note: Save a thought, idea, or general note
-- create_link: Bookmark a URL or share an article
-- create_todo: Remind the user to do something, including tasks with deadlines
-- search_assets: Look for previously saved notes, links, or todos
-- summarize_assets: Summarize or review a bounded set of already saved assets, only for supported requests
-
-Rules:
-- Preserve the original text exactly as provided (after trimming)
-- Keep Chinese user intent (用户输入中文就按中文理解)
-- Do NOT invent URLs - only set url when the user explicitly provides one
-- Only set dueAtIso when the time expression is explicit (e.g., "明天上午", "下周三下午3点")
-- Use search_assets for question-like queries like "我上次收藏的文章在哪" or "查找关于X的内容"
-- Use create_note for ambiguous statements that don't clearly fit other categories
-- For links with todo-like context (e.g., "提醒我看看这个 https://..."), prefer create_todo if there's a time hint, otherwise create_link
-- Treat the current date and time provided by the user message as the only basis for resolving relative dates
-- Resolve relative dates in the Asia/Shanghai time zone
-- If a relative time cannot be resolved safely, set dueAtIso to null and preserve the expression in timeText
-- Use summarize_assets only for clearly supported summary requests:
-  - unfinished_todos: reviewing or summarizing unfinished/pending todos
-  - recent_notes: summarizing recent notes or saved note records
-  - recent_bookmarks: summarizing recent bookmarks, saved links, or saved URLs
-- Do not use summarize_assets for broad knowledge questions like "总结一下 AI"; use search_assets when the user is looking for saved content.
-- Do not use summarize_assets for inputs that contain a URL; those should keep the existing create_link/create_todo behavior.
-- Set summaryTarget only when intent is summarize_assets; otherwise set it to null.
-
-Return a confidence score between 0 and 1:
-- 0.9-1.0: Very confident in the classification
-- 0.7-0.9: Confident
-- 0.5-0.7: Somewhat confident, but unclear
-- Below 0.5: Too uncertain, will fallback to rule-based classifier`
-
-const ASIA_SHANGHAI_TIME_ZONE = 'Asia/Shanghai'
-
-function buildPrompt(trimmed: string, now = new Date()) {
-  const localDateTime = new Intl.DateTimeFormat('zh-CN', {
-    timeZone: ASIA_SHANGHAI_TIME_ZONE,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  }).format(now)
-
-  return [
-    `Current server timestamp: ${now.toISOString()}`,
-    `Current date and time in ${ASIA_SHANGHAI_TIME_ZONE}: ${localDateTime}`,
-    `User input: ${JSON.stringify(trimmed)}`,
-  ].join('\n')
+type GenerateOptions<T> = {
+  schema: ZodSchema<T>
+  systemPrompt: string
+  userPrompt: string
+  timeoutMs?: number
+  maxRetries?: number
 }
 
-export type InterpretInputOptions = {
-  text: string
-}
+export async function runAiGeneration<T>({
+  schema,
+  systemPrompt,
+  userPrompt,
+  timeoutMs = ASSET_INPUT_MODEL_TIMEOUT_MS,
+  maxRetries = 1,
+}: GenerateOptions<T>): Promise<AiResult<T>> {
+  const model = getAiProvider()
 
-export async function interpretUserInput(
-  text: string
-): Promise<AiAssetInput | null> {
-  const trimmed = text.trim()
-  if (!trimmed) return null
-
-  const model = getAssetInputLanguageModel()
-  if (!model) return null
+  if (!model) {
+    return {
+      success: false,
+      error: new (await import('./ai.types')).AiProviderError('AI provider not configured', null),
+    }
+  }
 
   try {
     const result = await generateText({
       model,
-      output: Output.object({ schema: aiAssetInputSchema }),
-      system: SYSTEM_PROMPT,
-      prompt: buildPrompt(trimmed),
+      output: Output.object({ schema }),
+      system: systemPrompt,
+      prompt: userPrompt,
+      temperature: 0,
+      maxRetries,
+      timeout: timeoutMs,
+      providerOptions: {
+        alibaba: {
+          enableThinking: false,
+        },
+      },
+    })
+
+    return { success: true, data: result.output }
+  } catch (error) {
+    const parsedError = parseAiError(error)
+    return { success: false, error: parsedError }
+  }
+}
+
+export async function interpretAssetInputWithAi(
+  trimmed: string,
+  schema: ZodSchema<unknown>,
+  systemPrompt: string,
+  buildPromptFn: (text: string) => string
+): Promise<{ success: true; data: unknown } | { success: false; fallback: true }> {
+  const model = getAiProvider()
+
+  if (!model) {
+    return { success: false, fallback: true }
+  }
+
+  try {
+    const result = await generateText({
+      model,
+      output: Output.object({ schema }),
+      system: systemPrompt,
+      prompt: buildPromptFn(trimmed),
       temperature: 0,
       maxRetries: 1,
       timeout: ASSET_INPUT_MODEL_TIMEOUT_MS,
@@ -90,11 +83,48 @@ export async function interpretUserInput(
       },
     })
 
-    return result.output
+    return { success: true, data: result.output }
   } catch (error) {
-    console.warn('[ai.interpreter] AI interpretation failed', {
+    console.warn('[ai-runner] Asset interpretation failed, using fallback', {
       error: error instanceof Error ? error.message : String(error),
     })
-    return null
+    return { success: false, fallback: true }
+  }
+}
+
+export async function summarizeWithAi<T>(
+  schema: ZodSchema<T>,
+  systemPrompt: string,
+  promptInput: object,
+  timeoutMs: number
+): Promise<{ success: true; data: T } | { success: false; fallback: true }> {
+  const model = getAiProvider()
+
+  if (!model) {
+    return { success: false, fallback: true }
+  }
+
+  try {
+    const result = await generateText({
+      model,
+      output: Output.object({ schema }),
+      system: systemPrompt,
+      prompt: JSON.stringify(promptInput),
+      temperature: 0,
+      maxRetries: 1,
+      timeout: timeoutMs,
+      providerOptions: {
+        alibaba: {
+          enableThinking: false,
+        },
+      },
+    })
+
+    return { success: true, data: result.output }
+  } catch (error) {
+    console.warn('[ai-runner] Summary generation failed, using fallback', {
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return { success: false, fallback: true }
   }
 }
