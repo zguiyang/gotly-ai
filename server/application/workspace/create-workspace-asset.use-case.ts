@@ -27,7 +27,10 @@ export async function createWorkspaceAssetUseCase(
 
   if (result.kind === 'summary') {
     // TODO: Delegate to summary use-cases when they are implemented
-    throw new Error('Summary use cases not yet implemented in application layer')
+    return {
+      kind: 'summary' as const,
+      // TODO: Populate with summary result when summary use-cases are ready
+    }
   }
 
   return { kind: 'created', asset: result.asset }

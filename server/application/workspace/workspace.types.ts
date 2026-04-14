@@ -15,6 +15,8 @@ export type CreateWorkspaceAssetInput = {
   text: string
 }
 
+export type CreateWorkspaceAssetOutput = WorkspaceAssetActionResult
+
 export type SetTodoCompletionInput = {
   userId: string
   assetId: string
