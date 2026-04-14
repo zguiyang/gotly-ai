@@ -5,7 +5,7 @@ import { Bell, Settings, Search, Menu } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { workspaceNavItems, isWorkspaceNavItemActive } from "./nav-config"
+import { workspaceNavItems, isWorkspaceNavItemActive } from "@/config/workspace/nav"
 
 type TopAppBarProps = {
   userName: string

@@ -1,14 +1,12 @@
 import {
-  FileText,
-  Link2,
-  StickyNote,
-} from 'lucide-react'
-import {
   type AssetListItem,
   type BookmarkSummaryResult,
   type NoteSummaryResult,
   type TodoReviewResult,
 } from '@/shared/assets/assets.types'
+import { assetTypePresentation } from '@/config/ui/asset-presentation'
+
+export { assetTypePresentation }
 
 export function RecentItem({
   icon: Icon,
@@ -54,12 +52,6 @@ export function RecentItem({
       </div>
     </div>
   )
-}
-
-export const assetTypePresentation = {
-  note: { icon: FileText, iconBg: 'bg-primary/10', iconColor: 'text-primary', label: '笔记' },
-  link: { icon: Link2, iconBg: 'bg-secondary/10', iconColor: 'text-secondary', label: '书签' },
-  todo: { icon: StickyNote, iconBg: 'bg-tertiary/10', iconColor: 'text-tertiary', label: '待办' },
 }
 
 export function formatAssetTime(date: Date): string {
