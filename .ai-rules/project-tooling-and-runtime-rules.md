@@ -147,5 +147,5 @@ When adding or modifying constants:
 
 For all phase plan execution rules (Preflight Gate, Start Gate, Sync Gate, Fail-Fast, PR-only merge), see:
 
+- `.ai-rules/phase-execution-protocol.md`
 - `.ai-rules/nextjs-fullstack-project-rules.md` Section 9
-- `docs/architecture/phase-execution-protocol.md`

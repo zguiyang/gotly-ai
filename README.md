@@ -139,7 +139,7 @@ This project uses a structured phase-based execution model for refactoring and f
 
 **Protocol**: All phase plans follow Preflight → Start Gate → Development → Sync Gate → PR-only merge workflow.
 
-See `docs/architecture/phase-execution-protocol.md` for detailed execution protocol.
+See `.ai-rules/phase-execution-protocol.md` for detailed execution protocol.
 
 ## Tech Stack
 

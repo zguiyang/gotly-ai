@@ -93,7 +93,7 @@ Key rules:
 - **Fail-Fast**: Any gate failure stops execution immediately
 - **PR-only Merge**: No direct merge to main
 
-See `docs/architecture/phase-execution-protocol.md` for full protocol details.
+See `.ai-rules/phase-execution-protocol.md` for full protocol details.
 
 ## MCP Services
 
