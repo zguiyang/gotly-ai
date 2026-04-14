@@ -5,8 +5,8 @@ import { revalidatePath } from 'next/cache'
 import { ActionError, ACTION_ERROR_CODES } from '@/server/actions/action-error'
 import { runServerAction } from '@/server/actions/run-server-action'
 import { requireUser } from '@/server/auth/session'
-import { createWorkspaceAssetUseCase } from '@/server/application/workspace'
-import { setTodoCompletion, type AssetListItem } from '@/server/assets/assets.service'
+import { createWorkspaceAssetUseCase, setTodoCompletionUseCase } from '@/server/application/workspace'
+import { type AssetListItem } from '@/server/assets/assets.service'
 import { reviewUnfinishedTodos } from '@/server/assets/assets.todo-review'
 import { summarizeRecentNotes } from '@/server/assets/assets.note-summary'
 import { summarizeRecentBookmarks } from '@/server/assets/assets.bookmark-summary'
@@ -63,21 +63,17 @@ export async function setTodoCompletionAction(
     const user = await requireUser()
     const parsed = parseTodoCompletionInput(input)
 
-    const updated = await setTodoCompletion({
+    const result = await setTodoCompletionUseCase({
       userId: user.id,
       assetId: parsed.assetId,
       completed: parsed.completed,
     })
 
-    if (!updated) {
-      throw new ActionError('没有找到这条待办，或你没有权限更新它。', ACTION_ERROR_CODES.TODO_NOT_FOUND)
-    }
-
     revalidatePath('/workspace')
     revalidatePath('/workspace/all')
     revalidatePath('/workspace/todos')
 
-    return updated
+    return result
   })
 }
 
