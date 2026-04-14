@@ -1,34 +1,20 @@
 "use client"
 
 import Image from "next/image"
-import { Bell, Settings, Search, Menu, Bot, Package, Bookmark, CheckSquare, FileText } from "lucide-react"
+import { Bell, Settings, Search, Menu } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { workspaceNavItems, isWorkspaceNavItemActive } from "./nav-config"
 
 type TopAppBarProps = {
   userName: string
   userImage?: string | null
 }
 
-const navItems = [
-  { icon: Bot, label: "启动台", href: "/workspace" },
-  { icon: FileText, label: "笔记", href: "/workspace/notes" },
-  { icon: CheckSquare, label: "待办", href: "/workspace/todos" },
-  { icon: Bookmark, label: "书签", href: "/workspace/bookmarks" },
-  { icon: Package, label: "知识库", href: "/workspace/all" },
-]
-
 export function TopAppBar({ userName, userImage }: TopAppBarProps) {
   const pathname = usePathname()
   const fallbackInitial = userName.trim().slice(0, 1).toUpperCase() || 'G'
-
-  const isActive = (href: string) => {
-    if (href === "/workspace") {
-      return pathname === "/workspace"
-    }
-    return pathname.startsWith(href)
-  }
 
   return (
     <header className="h-14 w-full sticky top-0 bg-surface border-b border-outline-variant/20 flex items-center justify-between px-4 lg:px-8 z-40 font-[family-name:var(--font-manrope)] tracking-tight text-sm gap-4">
@@ -50,9 +36,9 @@ export function TopAppBar({ userName, userImage }: TopAppBarProps) {
                 </div>
               </div>
               <nav className="flex-1 px-2 py-4 space-y-0.5">
-                {navItems.map((item) => {
+                {workspaceNavItems.map((item) => {
                   const Icon = item.icon
-                  const active = isActive(item.href)
+                  const active = isWorkspaceNavItemActive(pathname, item.href)
                   return (
                     <Link
                       key={item.label}
