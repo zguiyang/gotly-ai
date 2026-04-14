@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 
-import { ActionError } from '@/server/actions/action-error'
+import { ActionError, ACTION_ERROR_CODES } from '@/server/actions/action-error'
 import { runServerAction } from '@/server/actions/run-server-action'
 import { requireUser } from '@/server/auth/session'
 import { createAsset, searchAssets, setTodoCompletion, type AssetListItem } from '@/server/assets/assets.service'
@@ -18,12 +18,12 @@ export async function createWorkspaceAssetAction(
     const user = await requireUser()
 
     if (typeof input !== 'string') {
-      throw new ActionError('先输入一句内容。', 'EMPTY_INPUT')
+      throw new ActionError('先输入一句内容。', ACTION_ERROR_CODES.EMPTY_INPUT)
     }
 
     const trimmed = input.trim()
     if (!trimmed) {
-      throw new ActionError('先输入一句内容。', 'EMPTY_INPUT')
+      throw new ActionError('先输入一句内容。', ACTION_ERROR_CODES.EMPTY_INPUT)
     }
 
     const result = await createAsset({ userId: user.id, text: trimmed })
@@ -75,13 +75,13 @@ function parseTodoCompletionInput(input: unknown): {
     !('assetId' in input) ||
     !('completed' in input)
   ) {
-    throw new ActionError('待办状态更新失败，请重试。', 'INVALID_TODO_COMPLETION_INPUT')
+    throw new ActionError('待办状态更新失败，请重试。', ACTION_ERROR_CODES.INVALID_TODO_COMPLETION_INPUT)
   }
 
   const { assetId, completed } = input
 
   if (typeof assetId !== 'string' || !assetId.trim() || typeof completed !== 'boolean') {
-    throw new ActionError('待办状态更新失败，请重试。', 'INVALID_TODO_COMPLETION_INPUT')
+    throw new ActionError('待办状态更新失败，请重试。', ACTION_ERROR_CODES.INVALID_TODO_COMPLETION_INPUT)
   }
 
   return { assetId: assetId.trim(), completed }
@@ -101,7 +101,7 @@ export async function setTodoCompletionAction(
     })
 
     if (!updated) {
-      throw new ActionError('没有找到这条待办，或你没有权限更新它。', 'TODO_NOT_FOUND')
+      throw new ActionError('没有找到这条待办，或你没有权限更新它。', ACTION_ERROR_CODES.TODO_NOT_FOUND)
     }
 
     revalidatePath('/workspace')
