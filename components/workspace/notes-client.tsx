@@ -9,20 +9,20 @@ function NoteCard({ note }: { note: AssetListItem }) {
   const hasTitle = note.title && note.title !== note.excerpt
 
   return (
-    <div className="break-inside-avoid mb-4 min-h-[140px] bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.08)] p-4 transition-shadow duration-200 flex flex-col">
+    <div className="break-inside-avoid mb-4 min-h-[140px] bg-surface-container-lowest rounded-lg shadow-note-card p-4 transition-shadow duration-200 flex flex-col">
       <div className="flex justify-end mb-2">
-        <span className="text-[10px] text-gray-500">
+        <span className="text-[10px] text-on-surface-variant/60">
           {note.timeText || formatAssetRelativeTime(note.createdAt)}
         </span>
       </div>
 
       <div className="flex-1">
         {hasTitle && (
-          <h3 className="text-sm font-medium text-gray-900 mb-1 leading-snug line-clamp-2">
+          <h3 className="text-sm font-medium text-on-surface mb-1 leading-snug line-clamp-2">
             {note.title}
           </h3>
         )}
-        <p className="text-xs text-gray-700 whitespace-pre-wrap leading-relaxed line-clamp-4">
+        <p className="text-xs text-on-surface-variant whitespace-pre-wrap leading-relaxed line-clamp-4">
           {note.excerpt}
         </p>
       </div>

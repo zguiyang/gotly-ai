@@ -114,6 +114,7 @@
   --shadow-elevation-1: 0 2px 8px -2px rgba(0, 81, 177, 0.04);
   --shadow-elevation-2: 0 4px 16px -4px rgba(0, 81, 177, 0.06);
   --shadow-elevation-3: 0 8px 24px -4px rgba(0, 81, 177, 0.08);
+  --shadow-note-card: 0 1px 3px rgba(0, 0, 0, 0.08);
 
   /* Typography Scale */
   --text-xs: 0.75rem;
