@@ -47,8 +47,25 @@ export type NoteSummaryResult = {
   generatedAt: Date
 }
 
+export type BookmarkSummarySource = {
+  id: string
+  title: string
+  url: string | null
+  createdAt: Date
+}
+
+export type BookmarkSummaryResult = {
+  headline: string
+  summary: string
+  keyPoints: string[]
+  sourceAssetIds: string[]
+  sources: BookmarkSummarySource[]
+  generatedAt: Date
+}
+
 export type WorkspaceAssetActionResult =
   | { kind: 'created'; asset: AssetListItem }
   | { kind: 'query'; query: string; results: AssetListItem[] }
   | { kind: 'todo-review'; review: TodoReviewResult }
   | { kind: 'note-summary'; summary: NoteSummaryResult }
+  | { kind: 'bookmark-summary'; summary: BookmarkSummaryResult }

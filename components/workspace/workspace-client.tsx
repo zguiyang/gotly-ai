@@ -12,23 +12,27 @@ import { callAction } from '@/components/actions/call-action'
 import {
   type AssetListItem,
   type AssetQueryResult,
+  type BookmarkSummaryResult,
   type NoteSummaryResult,
   type TodoReviewResult,
 } from '@/shared/assets/assets.types'
 import {
   createWorkspaceAssetAction,
   reviewUnfinishedTodosAction,
+  summarizeRecentBookmarksAction,
   summarizeRecentNotesAction,
 } from '@/app/workspace/actions'
 
 function QuickActionChips({
   onChipClick,
   onReviewTodos,
+  onSummarizeBookmarks,
   onSummarizeNotes,
   disabled,
 }: {
   onChipClick: (text: string) => void
   onReviewTodos: () => void
+  onSummarizeBookmarks: () => void
   onSummarizeNotes: () => void
   disabled: boolean
 }) {
@@ -64,6 +68,14 @@ function QuickActionChips({
         className="px-3 py-1.5 text-xs font-medium bg-secondary text-on-secondary hover:bg-secondary/90 rounded-sm transition-colors duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
       >
         总结最近笔记
+      </button>
+      <button
+        type="button"
+        onClick={onSummarizeBookmarks}
+        disabled={disabled}
+        className="px-3 py-1.5 text-xs font-medium bg-secondary text-on-secondary hover:bg-secondary/90 rounded-sm transition-colors duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        总结最近书签
       </button>
     </div>
   )
@@ -249,6 +261,50 @@ function NoteSummaryPanel({ summary }: { summary: NoteSummaryResult }) {
   )
 }
 
+function BookmarkSummaryPanel({ summary }: { summary: BookmarkSummaryResult }) {
+  return (
+    <section className="mb-8">
+      <div className="flex items-center gap-4 mb-2">
+        <h2 className="text-xs font-medium uppercase tracking-wider text-on-surface-variant">
+          书签摘要
+        </h2>
+        <div className="flex-1 h-px bg-outline-variant/20" />
+      </div>
+      <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-lg p-4">
+        <h3 className="text-sm font-semibold text-on-surface">
+          {summary.headline}
+        </h3>
+        <p className="text-sm text-on-surface-variant mt-2 leading-relaxed">
+          {summary.summary}
+        </p>
+        {summary.keyPoints.length > 0 ? (
+          <ul className="mt-3 space-y-1">
+            {summary.keyPoints.map((point, index) => (
+              <li key={`${point}-${index}`} className="text-sm text-on-surface">
+                {index + 1}. {point}
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        {summary.sources.length > 0 ? (
+          <div className="mt-4 pt-3 border-t border-outline-variant/10">
+            <p className="text-xs font-medium text-on-surface-variant mb-2">
+              来源
+            </p>
+            <div className="space-y-1">
+              {summary.sources.map((source) => (
+                <p key={source.id} className="text-xs text-on-surface-variant/80 break-words">
+                  {source.url ? `${source.title} · ${source.url}` : source.title}
+                </p>
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </div>
+    </section>
+  )
+}
+
 const assetTypePresentation = {
   note: { icon: FileText, iconBg: 'bg-primary/10', iconColor: 'text-primary', label: '笔记' },
   link: { icon: Link2, iconBg: 'bg-secondary/10', iconColor: 'text-secondary', label: '书签' },
@@ -276,6 +332,7 @@ export function WorkspaceClient({
   const [queryResult, setQueryResult] = useState<AssetQueryResult | null>(null)
   const [todoReview, setTodoReview] = useState<TodoReviewResult | null>(null)
   const [noteSummary, setNoteSummary] = useState<NoteSummaryResult | null>(null)
+  const [bookmarkSummary, setBookmarkSummary] = useState<BookmarkSummaryResult | null>(null)
 
   async function handleSubmit() {
     const text = inputValue.trim()
@@ -300,6 +357,7 @@ export function WorkspaceClient({
         setQueryResult(null)
         setTodoReview(null)
         setNoteSummary(null)
+        setBookmarkSummary(null)
         setInputValue('')
         setStatus('success')
         return
@@ -309,9 +367,11 @@ export function WorkspaceClient({
         setQueryResult({ query: result.query, results: result.results })
         setTodoReview(null)
         setNoteSummary(null)
+        setBookmarkSummary(null)
       }
       setTodoReview(null)
       setNoteSummary(null)
+      setBookmarkSummary(null)
       setStatus('success')
     } catch {
       setStatus('error')
@@ -335,6 +395,7 @@ export function WorkspaceClient({
         setTodoReview(result.review)
         setQueryResult(null)
         setNoteSummary(null)
+        setBookmarkSummary(null)
         setStatus('success')
         return
       }
@@ -360,6 +421,35 @@ export function WorkspaceClient({
 
       if (result.kind === 'note-summary') {
         setNoteSummary(result.summary)
+        setTodoReview(null)
+        setQueryResult(null)
+        setBookmarkSummary(null)
+        setStatus('success')
+        return
+      }
+
+      setStatus('success')
+    } catch {
+      setStatus('error')
+    }
+  }
+
+  async function handleSummarizeBookmarks() {
+    if (status === 'submitting') return
+
+    setStatus('submitting')
+    setMessage(null)
+
+    try {
+      const result = await callAction(() => summarizeRecentBookmarksAction(), {
+        loading: '正在总结书签...',
+        success: '书签摘要已生成。',
+        error: '书签摘要失败，请重试。',
+      })
+
+      if (result.kind === 'bookmark-summary') {
+        setBookmarkSummary(result.summary)
+        setNoteSummary(null)
         setTodoReview(null)
         setQueryResult(null)
         setStatus('success')
@@ -391,6 +481,7 @@ export function WorkspaceClient({
         <QuickActionChips
           onChipClick={(text) => setInputValue(text)}
           onReviewTodos={handleReviewTodos}
+          onSummarizeBookmarks={handleSummarizeBookmarks}
           onSummarizeNotes={handleSummarizeNotes}
           disabled={status === 'submitting'}
         />
@@ -435,6 +526,8 @@ export function WorkspaceClient({
         <TodoReviewPanel review={todoReview} />
       ) : noteSummary ? (
         <NoteSummaryPanel summary={noteSummary} />
+      ) : bookmarkSummary ? (
+        <BookmarkSummaryPanel summary={bookmarkSummary} />
       ) : null}
 
       <section>

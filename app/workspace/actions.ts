@@ -8,6 +8,7 @@ import { requireUser } from '@/server/auth/session'
 import { createAsset, searchAssets, setTodoCompletion, type AssetListItem } from '@/server/assets/assets.service'
 import { reviewUnfinishedTodos } from '@/server/assets/assets.todo-review'
 import { summarizeRecentNotes } from '@/server/assets/assets.note-summary'
+import { summarizeRecentBookmarks } from '@/server/assets/assets.bookmark-summary'
 import { type WorkspaceAssetActionResult } from '@/shared/assets/assets.types'
 
 export async function createWorkspaceAssetAction(
@@ -109,5 +110,13 @@ export async function summarizeRecentNotesAction(): Promise<WorkspaceAssetAction
     const user = await requireUser()
     const summary = await summarizeRecentNotes(user.id)
     return { kind: 'note-summary', summary }
+  })
+}
+
+export async function summarizeRecentBookmarksAction(): Promise<WorkspaceAssetActionResult> {
+  return runServerAction('workspace.summarizeRecentBookmarks', async () => {
+    const user = await requireUser()
+    const summary = await summarizeRecentBookmarks(user.id)
+    return { kind: 'bookmark-summary', summary }
   })
 }
