@@ -10,6 +10,25 @@ import { type AssetListItem } from '@/shared/assets/assets.types'
 import { type AssetSummaryTarget } from './assets.summary-intent.pure'
 import { ASSET_LIST_LIMIT_MIN, ASSET_LIST_LIMIT_DEFAULT, ASSET_LIST_LIMIT_MAX, ASSET_RECENT_LIMIT_DEFAULT, ASSET_RECENT_LIMIT_MAX } from '@/server/config/constants'
 
+/**
+ * Assets Domain Service
+ *
+ * Core responsibilities (Phase 4):
+ * - Asset CRUD (create, list, query)
+ * - Embedding scheduling
+ * - Todo completion management
+ *
+ * Delegated to other domains:
+ * - Search → server/search/
+ * - AI interpretation → server/ai/
+ * - Note summary → server/notes/
+ * - Todo review → server/todos/
+ * - Bookmark summary → server/bookmarks/
+ *
+ * DO NOT add new domain logic here. If you need new behavior,
+ * create it in the appropriate domain directory.
+ */
+
 export { type AssetListItem }
 
 export type AssetSummaryCommand = {
