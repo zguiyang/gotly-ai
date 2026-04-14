@@ -79,7 +79,7 @@ export function WorkspaceClient({
   recentAssets: AssetListItem[]
 }) {
   const [inputValue, setInputValue] = useState('')
-  const [recentItems, setRecentItems] = useState(recentAssets)
+  const [recentItems] = useState(recentAssets)
 
   const { state, submit, reviewTodos, summarizeNotes, summarizeBookmarks } = useWorkspaceSubmit()
 
