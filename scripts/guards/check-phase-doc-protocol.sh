@@ -42,9 +42,9 @@ check_rule() {
 main() {
   local phase_plan=""
   
-  # Find the phase plan document
+  # Find the phase plan document (look for phase_id with or without backticks)
   for f in docs/superpowers/plans/*.md; do
-    if grep -q "phase_id:" "$f"; then
+    if grep -q "phase_id" "$f" && grep -q "depends_on" "$f" && grep -q "parallel_safe" "$f"; then
       phase_plan="$f"
       break
     fi
