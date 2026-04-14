@@ -16,9 +16,8 @@ import {
   type AssetSummaryTarget,
 } from './assets.summary-intent.pure'
 import { parseAssetTimeText } from './assets.time'
-
-const ASSET_INPUT_MODEL_TIMEOUT_MS = 5_000
-const ASSET_INPUT_TIME_ZONE = 'Asia/Shanghai'
+import { ASSET_INPUT_MODEL_TIMEOUT_MS } from '@/server/config/constants'
+import { ASIA_SHANGHAI_TIME_ZONE } from '@/server/config/time'
 
 export type AssetInputCommand =
   | {
@@ -276,7 +275,7 @@ Return a confidence score between 0 and 1:
 
 function buildPrompt(trimmed: string, now = new Date()) {
   const localDateTime = new Intl.DateTimeFormat('zh-CN', {
-    timeZone: ASSET_INPUT_TIME_ZONE,
+    timeZone: ASIA_SHANGHAI_TIME_ZONE,
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -288,7 +287,7 @@ function buildPrompt(trimmed: string, now = new Date()) {
 
   return [
     `Current server timestamp: ${now.toISOString()}`,
-    `Current date and time in ${ASSET_INPUT_TIME_ZONE}: ${localDateTime}`,
+    `Current date and time in ${ASIA_SHANGHAI_TIME_ZONE}: ${localDateTime}`,
     `User input: ${JSON.stringify(trimmed)}`,
   ].join('\n')
 }

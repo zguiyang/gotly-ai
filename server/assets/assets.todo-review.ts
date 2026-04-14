@@ -14,9 +14,7 @@ import {
   type TodoReviewResult,
   type TodoReviewSource,
 } from '@/shared/assets/assets.types'
-
-const TODO_REVIEW_MODEL_TIMEOUT_MS = 6_000
-const TODO_REVIEW_LIMIT = 10
+import { TODO_REVIEW_MODEL_TIMEOUT_MS, TODO_REVIEW_LIMIT } from '@/server/config/constants'
 
 function getFallbackTodoReview(todos: AssetListItem[]): TodoReviewOutput {
   return {

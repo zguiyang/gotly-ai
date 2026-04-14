@@ -17,8 +17,7 @@ import {
   type NoteSummaryResult,
   type NoteSummarySource,
 } from '@/shared/assets/assets.types'
-
-const NOTE_SUMMARY_MODEL_TIMEOUT_MS = 6_000
+import { NOTE_SUMMARY_MODEL_TIMEOUT_MS } from '@/server/config/constants'
 
 function getFallbackNoteSummary(notes: AssetListItem[]): NoteSummaryOutput {
   return {

@@ -17,8 +17,7 @@ import {
   type BookmarkSummaryResult,
   type BookmarkSummarySource,
 } from '@/shared/assets/assets.types'
-
-const BOOKMARK_SUMMARY_MODEL_TIMEOUT_MS = 6_000
+import { BOOKMARK_SUMMARY_MODEL_TIMEOUT_MS } from '@/server/config/constants'
 
 function getFallbackBookmarkSummary(bookmarks: AssetListItem[]): BookmarkSummaryOutput {
   return {

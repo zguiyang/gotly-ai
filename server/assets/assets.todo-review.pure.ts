@@ -1,4 +1,5 @@
 import type { AssetListItem } from '@/shared/assets/assets.types'
+import { TODO_REVIEW_LIMIT } from '@/server/config/constants'
 
 export type TodoReviewPromptItem = {
   id: string
@@ -11,8 +12,6 @@ export type TodoReviewPromptItem = {
 export function buildTodoReviewPromptInput(
   todos: AssetListItem[]
 ): TodoReviewPromptItem[] {
-  const TODO_REVIEW_LIMIT = 10
-
   return todos.slice(0, TODO_REVIEW_LIMIT).map((todo) => ({
     id: todo.id,
     text: todo.originalText,

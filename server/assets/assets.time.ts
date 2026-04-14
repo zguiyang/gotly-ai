@@ -1,18 +1,6 @@
 import 'server-only'
 
-export const ASSET_TIME_ZONE = 'Asia/Shanghai'
-const ASIA_SHANGHAI_OFFSET_MS = 8 * 60 * 60 * 1000
-
-export type AssetTimeRangeHint = {
-  startsAt: Date
-  endsAt: Date
-}
-
-export type AssetTimeParseResult = {
-  timeText: string | null
-  dueAt: Date | null
-  rangeHint: AssetTimeRangeHint | null
-}
+import { ASIA_SHANGHAI_OFFSET_MS, type AssetTimeRangeHint, type AssetTimeParseResult } from '@/server/config/time'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 

@@ -1,4 +1,7 @@
 import type { AssetListItem } from '@/shared/assets/assets.types'
+import { BOOKMARK_SUMMARY_LIMIT } from '@/server/config/constants'
+
+export { BOOKMARK_SUMMARY_LIMIT }
 
 export type BookmarkSummaryPromptItem = {
   id: string
@@ -6,8 +9,6 @@ export type BookmarkSummaryPromptItem = {
   url: string | null
   createdAt: string
 }
-
-export const BOOKMARK_SUMMARY_LIMIT = 10
 
 export function buildBookmarkSummaryPromptInput(
   bookmarks: AssetListItem[]

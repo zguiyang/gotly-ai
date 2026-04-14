@@ -1,12 +1,13 @@
 import type { AssetListItem } from '@/shared/assets/assets.types'
+import { NOTE_SUMMARY_LIMIT } from '@/server/config/constants'
+
+export { NOTE_SUMMARY_LIMIT }
 
 export type NoteSummaryPromptItem = {
   id: string
   text: string
   createdAt: string
 }
-
-export const NOTE_SUMMARY_LIMIT = 10
 
 export function buildNoteSummaryPromptInput(
   notes: AssetListItem[]
