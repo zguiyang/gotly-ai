@@ -1,26 +1,11 @@
 "use client"
 
-import { Bot, Package, Bookmark, CheckSquare, FileText } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-
-const navItems = [
-  { icon: Bot, label: "启动台", href: "/workspace" },
-  { icon: FileText, label: "笔记", href: "/workspace/notes" },
-  { icon: CheckSquare, label: "待办", href: "/workspace/todos" },
-  { icon: Bookmark, label: "书签", href: "/workspace/bookmarks" },
-  { icon: Package, label: "知识库", href: "/workspace/all" },
-]
+import { workspaceNavItems, isWorkspaceNavItemActive } from "./nav-config"
 
 export function Sidebar() {
   const pathname = usePathname()
-
-  const isActive = (href: string) => {
-    if (href === "/workspace") {
-      return pathname === "/workspace"
-    }
-    return pathname.startsWith(href)
-  }
 
   return (
     <aside className="fixed left-0 top-0 h-full w-64 hidden lg:flex flex-col py-6 px-4 font-[family-name:var(--font-manrope)] text-sm z-50 bg-surface border-r border-outline-variant/20">
@@ -32,9 +17,9 @@ export function Sidebar() {
       </div>
 
       <nav className="space-y-0.5 flex-1">
-        {navItems.map((item) => {
+        {workspaceNavItems.map((item) => {
           const Icon = item.icon
-          const active = isActive(item.href)
+          const active = isWorkspaceNavItemActive(pathname, item.href)
           return (
             <Link
               key={item.label}
