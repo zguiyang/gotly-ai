@@ -5,7 +5,6 @@ import {
 } from 'lucide-react'
 import {
   type AssetListItem,
-  type AssetQueryResult,
   type BookmarkSummaryResult,
   type NoteSummaryResult,
   type TodoReviewResult,
