@@ -184,3 +184,76 @@ Before adding or changing tests:
 3. confirm whether the tested behavior belongs in `app/`, `components/`, or `server/`
 4. confirm whether real infrastructure is required for the integration being tested
 5. keep the testing surface minimal and aligned with the current stage of the project
+
+## 12. Phase 6 Test Architecture Upgrade (2026-04-14)
+
+### 12.1 Test Layer Structure
+
+This repository now follows a three-layer test architecture:
+
+| Layer | Location | Purpose |
+|-------|----------|---------|
+| Domain | `server/<domain>/__tests__/*.test.ts` | Unit tests for domain services |
+| Application | `server/application/<domain>/__tests__/*.test.ts` | Integration tests for use-cases |
+| Action Contract | `server/actions/__tests__/*.test.ts`, `app/**/__tests__/*.test.ts` | Server action contract tests |
+
+### 12.2 Test Infrastructure
+
+Shared test utilities are located at `server/test-utils/`:
+
+```
+server/test-utils/
+├── factories/       # Data factory functions (asset.factory.ts, user.factory.ts)
+├── mocks/           # Mock implementations (ai-runner.mock.ts, search-service.mock.ts)
+├── setup/           # Test setup utilities (test-clock.ts)
+└── README.md        # Usage conventions
+```
+
+### 12.3 Running Tests
+
+Use `pnpm` scripts for running tests:
+
+```bash
+pnpm run test:domain      # Run domain layer tests
+pnpm run test:application # Run application layer tests
+pnpm run test:actions     # Run action contract tests
+pnpm run test:critical    # Run all critical tests
+```
+
+Tests require the `server-only` alias workaround:
+
+```bash
+node --require ./scripts/register-server-only-alias.cjs --import tsx --test <test-files>
+```
+
+### 12.4 Test Fixtures and Mocks Rules
+
+**Required:**
+- All shared fixtures go in `server/test-utils/factories/`
+- All shared mocks go in `server/test-utils/mocks/`
+- New domain tests must use factory fixtures instead of inline objects
+
+**Forbidden:**
+- Copying fixtures between domains
+- Creating domain-specific mocks that duplicate `test-utils/` mocks
+- Hardcoding test data instead of using factories
+
+### 12.5 Exit Criteria for New Features
+
+New features must include:
+
+1. Domain unit tests (happy path + 1 failure/degradation branch)
+2. Integration tests for application-layer use-cases
+3. Action contract tests for server actions
+4. Updated `test:critical` coverage
+
+## 13. Worktree Execution Protocol
+
+When executing phase plans:
+
+1. **Preflight**: Verify dependencies (Phase 5 merged to main)
+2. **Worktree**: Create isolated worktree with `feat/<phase-id>` branch
+3. **Start Gate**: Verify branch baseline includes `origin/main`
+4. **Baseline**: Record existing test state
+5. **Sync Gate**: Rebase on `origin/main` before merge
+6. **Merge**: PR-only merge to `main` (no direct merge)
