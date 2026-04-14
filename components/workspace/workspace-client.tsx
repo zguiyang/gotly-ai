@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Sparkles } from 'lucide-react'
 
-import { callAction } from '@/components/actions/call-action'
+import { callAction } from '@/client/feedback/toast-action'
 import { type AssetListItem } from '@/shared/assets/assets.types'
 import {
   createWorkspaceAssetAction,

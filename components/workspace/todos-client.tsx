@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { Check, Circle, Clock, MoreHorizontal } from 'lucide-react'
 
 import { setTodoCompletionAction } from '@/app/workspace/actions'
-import { callAction } from '@/components/actions/call-action'
+import { callAction } from '@/client/feedback/toast-action'
 import { type AssetListItem } from '@/shared/assets/assets.types'
 import { getTodoGroupKey, type TodoGroupKey } from '@/shared/assets/asset-time-display'
 
