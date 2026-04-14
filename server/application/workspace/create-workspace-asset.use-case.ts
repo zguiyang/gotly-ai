@@ -1,6 +1,9 @@
 import 'server-only'
 
 import { createAsset, searchAssets } from '@/server/assets/assets.service'
+import { reviewUnfinishedTodos } from '@/server/assets/assets.todo-review'
+import { summarizeRecentNotes } from '@/server/assets/assets.note-summary'
+import { summarizeRecentBookmarks } from '@/server/assets/assets.bookmark-summary'
 import type { CreateWorkspaceAssetInput, WorkspaceAssetActionResult } from './workspace.types'
 
 export async function createWorkspaceAssetUseCase(
@@ -26,11 +29,16 @@ export async function createWorkspaceAssetUseCase(
   }
 
   if (result.kind === 'summary') {
-    // TODO: Delegate to summary use-cases when they are implemented
-    return {
-      kind: 'summary' as const,
-      // TODO: Populate with summary result when summary use-cases are ready
+    if (result.summaryTarget === 'unfinished_todos') {
+      const review = await reviewUnfinishedTodos(input.userId)
+      return { kind: 'todo-review', review }
     }
+    if (result.summaryTarget === 'recent_notes') {
+      const summary = await summarizeRecentNotes(input.userId)
+      return { kind: 'note-summary', summary }
+    }
+    const summary = await summarizeRecentBookmarks(input.userId)
+    return { kind: 'bookmark-summary', summary }
   }
 
   return { kind: 'created', asset: result.asset }
