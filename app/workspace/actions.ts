@@ -5,11 +5,9 @@ import { revalidatePath } from 'next/cache'
 import { ActionError, ACTION_ERROR_CODES } from '@/server/actions/action-error'
 import { runServerAction } from '@/server/actions/run-server-action'
 import { requireUser } from '@/server/auth/session'
-import { createAsset, searchAssets, setTodoCompletion, type AssetListItem } from '@/server/assets/assets.service'
-import { reviewUnfinishedTodos } from '@/server/assets/assets.todo-review'
-import { summarizeRecentNotes } from '@/server/assets/assets.note-summary'
-import { summarizeRecentBookmarks } from '@/server/assets/assets.bookmark-summary'
+import { setTodoCompletion, type AssetListItem } from '@/server/assets/assets.service'
 import { type WorkspaceAssetActionResult } from '@/shared/assets/assets.types'
+import { createWorkspaceAssetUseCase } from '@/server/application/workspace/create-workspace-asset.use-case'
 
 export async function createWorkspaceAssetAction(
   input: unknown
@@ -26,42 +24,11 @@ export async function createWorkspaceAssetAction(
       throw new ActionError('先输入一句内容。', ACTION_ERROR_CODES.EMPTY_INPUT)
     }
 
-    const result = await createAsset({ userId: user.id, text: trimmed })
-
-    if (result.kind === 'search') {
-      const results = await searchAssets({
-        userId: user.id,
-        query: result.query || trimmed,
-        typeHint: result.typeHint,
-        timeHint: result.timeHint,
-        completionHint: result.completionHint,
-        limit: 5,
-      })
-
-      return {
-        kind: 'query',
-        query: result.query || trimmed,
-        results,
-      }
-    }
-
-    if (result.kind === 'summary') {
-      if (result.summaryTarget === 'unfinished_todos') {
-        const review = await reviewUnfinishedTodos(user.id)
-        return { kind: 'todo-review', review }
-      }
-
-      if (result.summaryTarget === 'recent_notes') {
-        const summary = await summarizeRecentNotes(user.id)
-        return { kind: 'note-summary', summary }
-      }
-
-      const summary = await summarizeRecentBookmarks(user.id)
-      return { kind: 'bookmark-summary', summary }
-    }
+    const result = await createWorkspaceAssetUseCase({ userId: user.id, text: trimmed })
 
     revalidatePath('/workspace')
-    return { kind: 'created', asset: result.asset }
+
+    return result
   })
 }
 
@@ -115,6 +82,7 @@ export async function setTodoCompletionAction(
 export async function reviewUnfinishedTodosAction(): Promise<WorkspaceAssetActionResult> {
   return runServerAction('workspace.reviewUnfinishedTodos', async () => {
     const user = await requireUser()
+    const { reviewUnfinishedTodos } = await import('@/server/assets/assets.todo-review')
     const review = await reviewUnfinishedTodos(user.id)
     return { kind: 'todo-review', review }
   })
@@ -123,6 +91,7 @@ export async function reviewUnfinishedTodosAction(): Promise<WorkspaceAssetActio
 export async function summarizeRecentNotesAction(): Promise<WorkspaceAssetActionResult> {
   return runServerAction('workspace.summarizeRecentNotes', async () => {
     const user = await requireUser()
+    const { summarizeRecentNotes } = await import('@/server/assets/assets.note-summary')
     const summary = await summarizeRecentNotes(user.id)
     return { kind: 'note-summary', summary }
   })
@@ -131,6 +100,7 @@ export async function summarizeRecentNotesAction(): Promise<WorkspaceAssetAction
 export async function summarizeRecentBookmarksAction(): Promise<WorkspaceAssetActionResult> {
   return runServerAction('workspace.summarizeRecentBookmarks', async () => {
     const user = await requireUser()
+    const { summarizeRecentBookmarks } = await import('@/server/assets/assets.bookmark-summary')
     const summary = await summarizeRecentBookmarks(user.id)
     return { kind: 'bookmark-summary', summary }
   })
