@@ -2,26 +2,8 @@
 
 import { FileText } from 'lucide-react'
 
+import { formatAssetRelativeTime } from '@/shared/assets/asset-time-display'
 import { type AssetListItem } from '@/shared/assets/assets.types'
-
-function formatRelativeTime(date: Date): string {
-  const now = new Date()
-  const diff = now.getTime() - date.getTime()
-  const seconds = Math.floor(diff / 1000)
-  const minutes = Math.floor(seconds / 60)
-  const hours = Math.floor(minutes / 60)
-  const days = Math.floor(hours / 24)
-
-  if (days > 7) {
-    return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
-  }
-  if (days > 1) return `${days}天前`
-  if (days === 1) return '昨天'
-  if (hours > 1) return `${hours}小时前`
-  if (hours === 1) return '1小时前'
-  if (minutes > 1) return `${minutes}分钟前`
-  return '刚刚'
-}
 
 function NoteCard({ note }: { note: AssetListItem }) {
   const hasTitle = note.title && note.title !== note.excerpt
@@ -30,7 +12,7 @@ function NoteCard({ note }: { note: AssetListItem }) {
     <div className="break-inside-avoid mb-4 min-h-[140px] bg-white rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.08)] p-4 transition-shadow duration-200 flex flex-col">
       <div className="flex justify-end mb-2">
         <span className="text-[10px] text-gray-500">
-          {note.timeText || formatRelativeTime(note.createdAt)}
+          {note.timeText || formatAssetRelativeTime(note.createdAt)}
         </span>
       </div>
 
