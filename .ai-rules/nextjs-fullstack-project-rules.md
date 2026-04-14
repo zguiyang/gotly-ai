@@ -81,6 +81,20 @@ Rules:
 5. All files import from the canonical source, not local definitions.
 6. Do not scatter business constants across multiple files.
 
+### 4.2.2 Frontend Boundary Rules
+
+Components must not contain state machine, call orchestration, or direct imports from `app/**/actions`.
+
+Rules:
+
+1. **State machine logic**: Define in `hooks/**`.
+2. **Server action client adapters**: Define in `client/actions/**`.
+3. **Toast/action feedback**: Define in `client/feedback/**`.
+4. Components only handle UI rendering and event binding.
+5. Call chain direction: `components -> hooks -> client/actions -> app server actions`.
+
+See `docs/architecture/frontend-boundary-rules.md` for detailed frontend boundary specifications.
+
 ### 4.3 `lib/`
 
 `lib/` contains lightweight shared utilities and low-level helpers.

@@ -121,3 +121,21 @@ Before generating code that uses these libraries:
    - `ahooks`
    - `tanstack-form`
    - `zod`
+
+## 9. Custom Hooks Organization Rules
+
+Custom hooks should be organized by domain and responsibility.
+
+Rules:
+
+1. Place hooks in `hooks/<domain>/` directories (e.g., `hooks/workspace/`).
+2. Each hook should have a single, focused responsibility.
+3. Prefer composability: small, focused hooks that combine into larger behaviors.
+4. State machine and async orchestration logic belongs in hooks, not in components.
+5. Hooks should not render UI; delegate UI to components.
+6. When a hook grows beyond its original intent, split it into smaller focused hooks.
+
+Good hook naming:
+- `use-workspace-action-state` - manages action state machine
+- `use-workspace-submit` - handles submit flow orchestration
+- `use-todo-completion` - handles todo toggle with optimistic updates
