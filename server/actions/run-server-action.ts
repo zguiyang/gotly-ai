@@ -2,7 +2,7 @@ import 'server-only'
 
 import { unstable_rethrow } from 'next/navigation'
 
-import { ActionError, getActionErrorMessage } from './action-error'
+import { normalizeActionError } from './action-error'
 
 type ServerActionContext = {
   requestId: string
@@ -29,15 +29,19 @@ export async function runServerAction<T>(
   } catch (error) {
     unstable_rethrow(error)
 
+    const normalized = normalizeActionError(error)
+    const durationMs = Date.now() - startedAt
+
     console.error('[server-action]', {
       action,
       requestId,
-      durationMs: Date.now() - startedAt,
+      durationMs,
       status: 'error',
-      code: error instanceof ActionError ? error.code : 'UNKNOWN',
-      error,
+      errorCode: normalized.code,
+      errorMessage: normalized.publicMessage,
+      errorName: error instanceof Error ? error.name : 'UnknownError',
     })
 
-    throw new Error(getActionErrorMessage(error))
+    throw new Error(normalized.publicMessage)
   }
 }
