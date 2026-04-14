@@ -23,7 +23,7 @@ export function useWorkspaceSubmit() {
   const [state, setState] = useState<WorkspaceActionState>(createInitialWorkspaceActionState)
 
   const submit = useCallback(
-    async (input: unknown) => {
+    async (input: unknown): Promise<WorkspaceAssetActionResult | null> => {
       setState((prev) => toSubmitting(prev))
 
       try {
@@ -37,9 +37,11 @@ export function useWorkspaceSubmit() {
         )
 
         setState((prev) => applyWorkspaceActionResult(prev, result))
+        return result
       } catch (error) {
         const message = error instanceof Error ? error.message : '处理失败，请重试。'
         setState((prev) => toError(prev, message))
+        return null
       }
     },
     []

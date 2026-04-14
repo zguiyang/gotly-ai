@@ -6,13 +6,13 @@ import { Sparkles } from 'lucide-react'
 import { type AssetListItem } from '@/shared/assets/assets.types'
 import {
   RecentItem,
-  assetTypePresentation,
   formatAssetTime,
   WorkspaceBookmarkSummaryPanel,
   WorkspaceNoteSummaryPanel,
   WorkspaceQueryResultsPanel,
   WorkspaceTodoReviewPanel,
 } from './workspace-result-panels'
+import { assetTypePresentation } from '@/config/ui/asset-presentation'
 import { useWorkspaceSubmit } from '@/hooks/workspace/use-workspace-submit'
 
 function QuickActionChips({
@@ -79,18 +79,23 @@ export function WorkspaceClient({
   recentAssets: AssetListItem[]
 }) {
   const [inputValue, setInputValue] = useState('')
-  const [recentItems] = useState(recentAssets)
+  const [recentItems, setRecentItems] = useState(recentAssets)
 
   const { state, submit, reviewTodos, summarizeNotes, summarizeBookmarks } = useWorkspaceSubmit()
 
   const { status, message, queryResult, todoReview, noteSummary, bookmarkSummary } = state
 
-  function handleSubmit() {
+  async function handleSubmit() {
     const text = inputValue.trim()
     if (!text) {
       return
     }
-    submit(text)
+    const result = await submit(text)
+
+    if (result?.kind === 'created') {
+      setRecentItems((items) => [result.asset, ...items].slice(0, 6))
+    }
+
     setInputValue('')
   }
 

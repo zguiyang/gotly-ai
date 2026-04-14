@@ -6,8 +6,6 @@ import {
 } from '@/shared/assets/assets.types'
 import { assetTypePresentation } from '@/config/ui/asset-presentation'
 
-export { assetTypePresentation }
-
 export function RecentItem({
   icon: Icon,
   iconBg,
