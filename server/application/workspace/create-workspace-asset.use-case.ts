@@ -4,24 +4,17 @@ import { createAsset, searchAssets } from '@/server/assets/assets.service'
 import { reviewUnfinishedTodos } from '@/server/assets/assets.todo-review'
 import { summarizeRecentNotes } from '@/server/assets/assets.note-summary'
 import { summarizeRecentBookmarks } from '@/server/assets/assets.bookmark-summary'
-import { type WorkspaceAssetActionResult } from '@/shared/assets/assets.types'
-
-export type CreateWorkspaceAssetInput = {
-  userId: string
-  text: string
-}
+import type { CreateWorkspaceAssetInput, WorkspaceAssetActionResult } from './workspace.types'
 
 export async function createWorkspaceAssetUseCase(
   input: CreateWorkspaceAssetInput
 ): Promise<WorkspaceAssetActionResult> {
-  const { userId, text } = input
-
-  const result = await createAsset({ userId, text })
+  const result = await createAsset({ userId: input.userId, text: input.text })
 
   if (result.kind === 'search') {
     const results = await searchAssets({
-      userId,
-      query: result.query || text,
+      userId: input.userId,
+      query: result.query || input.text,
       typeHint: result.typeHint,
       timeHint: result.timeHint,
       completionHint: result.completionHint,
@@ -30,23 +23,21 @@ export async function createWorkspaceAssetUseCase(
 
     return {
       kind: 'query',
-      query: result.query || text,
+      query: result.query || input.text,
       results,
     }
   }
 
   if (result.kind === 'summary') {
     if (result.summaryTarget === 'unfinished_todos') {
-      const review = await reviewUnfinishedTodos(userId)
+      const review = await reviewUnfinishedTodos(input.userId)
       return { kind: 'todo-review', review }
     }
-
     if (result.summaryTarget === 'recent_notes') {
-      const summary = await summarizeRecentNotes(userId)
+      const summary = await summarizeRecentNotes(input.userId)
       return { kind: 'note-summary', summary }
     }
-
-    const summary = await summarizeRecentBookmarks(userId)
+    const summary = await summarizeRecentBookmarks(input.userId)
     return { kind: 'bookmark-summary', summary }
   }
 

@@ -122,6 +122,34 @@ Rules:
 - Do not introduce nested layers such as `server/modules/` or `server/common/` unless the codebase genuinely needs them.
 - Keep database access, Redis access, job orchestration, and other privileged infrastructure integrations in server-only code paths.
 
+### 4.4.1 Application Layer (`server/application/`)
+
+The `server/application/` directory contains use-case orchestration layer:
+
+Rules:
+
+- `server/application/<domain>/` contains use-cases that orchestrate domain services
+- Use-case files follow `<action>.use-case.ts` naming convention
+- Use-cases handle business logic branching, cross-domain coordination, and error translation
+- Use-cases **must not** depend on `app/` layer (Next.js route handlers)
+- Use-cases **must not** call `revalidatePath()` or other Next.js runtime APIs
+- Use-cases delegate to domain services in `server/<domain>/`
+
+Example structure:
+```
+server/
+  application/
+    workspace/
+      create-workspace-asset.use-case.ts
+      set-todo-completion.use-case.ts
+      workspace.types.ts
+      index.ts
+  assets/
+    assets.service.ts
+```
+
+See `docs/architecture/action-application-boundary-rules.md` for detailed specifications.
+
 ### 4.5 `shared/`
 
 `shared/` is reserved for cross-runtime shared code that is intentionally reused by both server and client.

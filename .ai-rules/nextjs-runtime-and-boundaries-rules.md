@@ -69,3 +69,36 @@ When using client-focused libraries such as `ahooks` or `@tanstack/react-form`:
 - do not use them to replace server-rendered data access
 - validate sensitive or persisted data again on the server
 - read `.ai-rules/react-client-state-and-forms-rules.md` for the detailed rules
+
+## 7. Server Actions and Application Layer
+
+### 7.1 Action Entry Responsibilities
+
+Server Actions in `app/**/actions.ts` should remain thin entry points:
+
+- Input validation (type checking, format validation)
+- Authentication (`requireUser()`)
+- `runServerAction()` wrapper for logging/tracing
+- `revalidatePath()` for cache invalidation
+- Delegating to use-cases for business logic orchestration
+
+### 7.2 Application Use-Case Responsibilities
+
+Use-cases in `server/application/<domain>/` handle orchestration:
+
+- Business logic branching and delegation to domain services
+- Cross-domain coordination
+- Error handling and translation
+- **Must NOT** call `revalidatePath()` or other Next.js runtime APIs
+- **Must NOT** depend on `@/app` (would create circular dependency)
+
+### 7.3 Dependency Direction
+
+The correct dependency chain is:
+```
+app/**/actions.ts → server/application/<domain>/*.use-case.ts → server/<domain>/*.service.ts
+```
+
+Server/Application layer must never depend on App layer.
+
+See `docs/architecture/action-application-boundary-rules.md` for detailed boundary specifications.
