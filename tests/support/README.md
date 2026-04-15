@@ -1,11 +1,11 @@
-# Test Utilities (`server/test-utils/`)
+# Test Utilities (`tests/support/`)
 
 Shared test infrastructure for consistent, reproducible tests.
 
 ## Directory Structure
 
 ```
-server/test-utils/
+tests/support/
 ├── factories/       # Data factory functions for creating test fixtures
 ├── mocks/           # Mock implementations of services
 ├── setup/           # Test setup utilities (clock, helpers)
@@ -49,8 +49,8 @@ Use setup utilities (`setup/*.ts`) for:
 - Hardcoding test data in test files instead of using factories
 
 **REQUIRED:**
-- All shared fixtures go in `server/test-utils/factories/`
-- All shared mocks go in `server/test-utils/mocks/`
+- All shared fixtures go in `tests/support/factories/`
+- All shared mocks go in `tests/support/mocks/`
 - Update this README when adding new utilities
 
 ## Examples
@@ -58,8 +58,8 @@ Use setup utilities (`setup/*.ts`) for:
 ### Factory Usage
 
 ```typescript
-import { createAssetFixture, assetFixtures } from '@/server/test-utils/factories/asset.factory'
-import { createUserFixture } from '@/server/test-utils/factories/user.factory'
+import { createAssetFixture, assetFixtures } from '@/tests/support/factories/asset.factory'
+import { createUserFixture } from '@/tests/support/factories/user.factory'
 
 // Create with defaults
 const asset = assetFixtures.note()
@@ -75,8 +75,8 @@ const link = createAssetFixture({
 ### Mock Usage
 
 ```typescript
-import { aiRunnerMocks } from '@/server/test-utils/mocks/ai-runner.mock'
-import { searchServiceMocks } from '@/server/test-utils/mocks/search-service.mock'
+import { aiRunnerMocks } from '@/tests/support/mocks/ai-runner.mock'
+import { searchServiceMocks } from '@/tests/support/mocks/search-service.mock'
 
 // Happy path
 const successfulAi = aiRunnerMocks.success({ type: 'note' })
@@ -91,7 +91,7 @@ const emptySearch = searchServiceMocks.empty()
 ### Test Clock Usage
 
 ```typescript
-import { createTestClock } from '@/server/test-utils/setup/test-clock'
+import { createTestClock } from '@/tests/support/setup/test-clock'
 
 test('逾期待办', () => {
   const clock = createTestClock(new Date('2024-01-15'))
